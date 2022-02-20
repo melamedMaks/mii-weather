@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Mii Weather</string>
+    <string name="current_weather">Current</string>
+    <string name="later_weather">Later</string>
+    <string name="eight_days_weather">Eight Days</string>
+    <string name="map">Map</string>
+    <string name="min">Min: </string>
+    <string name="humidity">Humidity</string>
+    <string name="visibility">Visibility</string>
+    <string name="moonset">Moonset</string>
+    <string name="maximum">Max: </string>
+    <string name="wind">Wind</string>
+    <string name="pressure">Pressure</string>
+    <string name="search_hint">Search ..</string>
+    <string name="get_local_weather">Get Local Weather</string>
+    <string name="weather_condition_icon">Weather condition icon</string>
+    <string name="clickable_search_icon">Clickable search icon</string>
+    <string name="get_current_location_button">Get current location button</string>
+    <string name="sunrise_icon">Sunrise icon</string>
+    <string name="sunset_icon">Sunset icon</string>
+    <string name="wind_icon">Wind icon</string>
+    <string name="humidity_icon">Humidity icon</string>
+    <string name="atmospheric_pressure_icon">Atmospheric pressure icon</string>
+    <string name="uv">uv</string>
+    <string name="moon_rise">moon rise</string>
+    <string name="moon_phase">moon phase</string>
+    <string name="app_logo_on_splash_screen">app logo on splash screen</string>
+    <string name="app_logo">app logo</string>
+    <string name="pointer_icon">pointer icon</string>
+    <string name="try_any_place_on_the_earth">Try ANY place on the Earth!</string>
+    <string name="full_screen_button">full screen button</string>
+    <string name="quot_after_a_storm_comes_a_calm_quot">\"After a storm comes a calm.\"</string>
+</resources>
