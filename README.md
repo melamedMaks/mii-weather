@@ -2,6 +2,7 @@
 <h3>Weather App (Android / Kotlin)</h3>
 <img src="https://github.com/melamedMaks/mii-weather/blob/main/images/icmii.png" width="88">
 <p><b>Mii Weather</b> is the weather app that provides <b>current</b>, <b>hourly</b> and <b>8 days</b> forecast,<br>that is available by query search for any place on Earth.<br><br>
+<a href="https://play.google.com/store/apps/details?id=mii.weather">Available on Google Play</a><br><br>
 If user gives location permission, the app instantly tracks a device location and provides <b>current local weather</b> information.<br>User can also see the map moving from a default to the current location view.
 The app also shows weather map layers that available by click on the weather icon.<br>
 All data in the app is fetched from <a href="https://www.openweathermap.org/api">OpenWeathermap</a> API.<br><br>
