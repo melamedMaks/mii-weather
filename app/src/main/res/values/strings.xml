@@ -27,7 +27,7 @@
     <string name="app_logo_on_splash_screen">app logo on splash screen</string>
     <string name="app_logo">app logo</string>
     <string name="pointer_icon">pointer icon</string>
-    <string name="try_any_place_on_the_earth">Try ANY place on the Earth!</string>
+    <string name="try_any_place_on_the_earth">Try ANY place on Earth!</string>
     <string name="full_screen_button">full screen button</string>
     <string name="quot_after_a_storm_comes_a_calm_quot">\"After a storm comes a calm.\"</string>
 </resources>

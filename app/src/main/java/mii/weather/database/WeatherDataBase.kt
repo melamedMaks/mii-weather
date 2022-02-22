@@ -12,7 +12,7 @@ const val DB_VERSION = 1
 
 const val DB_NAME = "WeatherDB"
 
-@Database(entities = [WeatherData::class], version = DB_VERSION, exportSchema = false)
+@Database(entities = [WeatherData::class], version = DB_VERSION)
 abstract class WeatherDataBase : RoomDatabase() {
 
     companion object {

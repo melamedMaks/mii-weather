@@ -77,7 +77,7 @@ fun tempToIntAndString(temp: Double): String {
     val t = temp.roundToInt()
     return when {
         t > 0 -> {
-            "+${t}$celsius"
+            "${t}$celsius"
         }
         else -> {
             "${t}$celsius"
