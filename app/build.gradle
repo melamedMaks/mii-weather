@@ -14,7 +14,7 @@ android {
         applicationId "mii.weather"
         minSdk 25
         targetSdk 31
-        versionCode 1
+        versionCode 4
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -46,7 +46,7 @@ dependencies {
     def nav_version = "2.4.1"
 
     //for tab layout in viewPager2
-    implementation("com.google.android.material:material:1.1.0-beta01")
+    implementation("com.google.android.material:material:1.6.0-alpha02")
 
     //nav component
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -64,9 +64,9 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
-// To use Kotlin annotation processing tool
+    // To use Kotlin annotation processing tool
     kapt "androidx.room:room-compiler:$room_version"
-// optional - Kotlin Extensions and Coroutines support for Room
+    // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"
     // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:$room_version"
