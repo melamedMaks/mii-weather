@@ -3,6 +3,7 @@ package mii.weather.ui
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import mii.weather.models.AirPollutionResult
 import mii.weather.ui.current.CurrentWeatherFragment
 import mii.weather.ui.eight.EightDayWeatherFragment
 import mii.weather.ui.later.LaterTodayWeatherFragment
@@ -28,6 +29,8 @@ class SectionsPagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
     }
 }
 
+//custom handling a back pressed func of Activity
+// by implementing this Boolean interface (see description in Main Activity)
 interface ActivityBackPressedCallback {
     fun handleActivityOnBackPressed(): Boolean
 }

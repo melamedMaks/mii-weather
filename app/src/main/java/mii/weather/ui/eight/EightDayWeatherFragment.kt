@@ -1,5 +1,6 @@
 package mii.weather.ui.eight
 
+import android.graphics.Color.rgb
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.Gravity
@@ -40,7 +41,6 @@ class EightDayWeatherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initDataObserver()
     }
 
@@ -48,9 +48,9 @@ class EightDayWeatherFragment : Fragment() {
         commonViewModel.oneCallWeatherResult.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
                 updateEightDayRecycler(it)
-                if (binding.coverEight.isVisible) {
+                if (binding.coverScreenEight.isVisible) {
                     TransitionManager.beginDelayedTransition(binding.root, transition)
-                    binding.coverEight.isVisible = false
+                    binding.coverScreenEight.isVisible = false
                 }
             }
         }
@@ -63,8 +63,8 @@ class EightDayWeatherFragment : Fragment() {
     }
 
     private fun updateEightDayRecycler(it: OneCallWeatherResult) {
-        binding.recyclerFiveDay.adapter = EightDayAdapter(it)
-        binding.recyclerFiveDay.layoutManager = LinearLayoutManager(
+        binding.recyclerEightDay.adapter = EightDayAdapter(it)
+        binding.recyclerEightDay.layoutManager = LinearLayoutManager(
             requireContext(), LinearLayoutManager.VERTICAL, false
         )
     }

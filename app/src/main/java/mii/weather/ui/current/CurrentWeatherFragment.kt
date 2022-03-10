@@ -5,7 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.Color
+import android.graphics.Color.rgb
 import android.location.Location
 import android.location.Location.distanceBetween
 import android.net.ConnectivityManager
@@ -67,7 +67,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     private var lonLocal: Double = 0.0
     private val locationRange: Float = 50f
     private val timeRange: Long = 3600 * 1000
-    var lastSavedTimestamp: Long = 0
+    private var lastSavedTimestamp: Long = 0
 
     private var isUIUpdatedByCurrentLocation = false
 
@@ -76,7 +76,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     private lateinit var precipitationOverlay: TileOverlay
     private lateinit var windOverlay: TileOverlay
     private lateinit var cloudsOverlay: TileOverlay
-    private lateinit var tempOverlay: TileOverlay
+//    private lateinit var tempOverlay: TileOverlay
 
     private var fullscreen = false
 
@@ -119,7 +119,16 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     private fun initObservers() {
         weatherObserver()
         oneCallWeatherObserver()
+        airPollutionObserver()
         onErrorObserver()
+    }
+
+    private fun airPollutionObserver() {
+        commonViewModel.airPollutionResult.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                updateAirPollution(it)
+            }
+        }
     }
 
     private fun oneCallWeatherObserver() {
@@ -154,10 +163,10 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
 
     private fun getWeatherWithUserInput(): Boolean {
         binding.buttonGetLocalWeatherCurrent.isClickable = false
-        isUIUpdatedByCurrentLocation = false
         binding.progressBar.visibility = View.VISIBLE
         val input = binding.editTextCityInputCurrent.text.toString().lowercase()
         if (input != "") {
+            isUIUpdatedByCurrentLocation = false
             commonViewModel.getWeatherByQuery(input, requireContext())
             binding.editTextCityInputCurrent.text.clear()
             hideKeyboard(view)
@@ -201,7 +210,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
                 map.uiSettings.setAllGesturesEnabled(false)
                 false
             } else {
-                binding.imageViewPointerCurrent.setColorFilter(Color.rgb(117, 117, 117))
+                binding.imageViewPointerCurrent.setColorFilter(rgb(117, 117, 117))
                 setOverLayers()
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lon), zoomOut))
                 map.uiSettings.setAllGesturesEnabled(true)
@@ -402,7 +411,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         val icon = it.current.weather[0].icon
         setIconFromUrl(icon, binding.imageViewIconCurrent)
 
-        val description = "${firstCharUp(it.current.weather[0].description)},"
+        val description = firstCharUp(it.current.weather[0].description)
         binding.textViewDescriptionCurrentText.text = description
 
         binding.textViewSunriseCurrentValue.text = getLocalHourFromTimeStamp(
@@ -439,7 +448,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         val tempMax = tempToIntAndString(it.daily[0].temp.max)
         binding.textViewMaxTempCurrent.text = tempMax
 
-        val until = "Valid untill: ${getLocalHourFromTimeStamp(it.hourly[1].dt, it.timezoneOffset)}"
+        val until = "Valid until: ${getLocalHourFromTimeStamp(it.hourly[1].dt, it.timezoneOffset)}"
         binding.textViewFeelValue.text = until
 
         TransitionManager.beginDelayedTransition(binding.root, transitionTop)
@@ -450,20 +459,29 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     //used for the reason to make text queries by place name on Earth
     //which aren't exist in oneCal API
     private fun updateCurrentData(weatherResult: WeatherResult) {
-
         var cityCountry = "${weatherResult.city.name}, ${weatherResult.city.country}"
         binding.textViewCityCountryCurrent.text = cityCountry
-        val city = "${weatherResult.city.name}, ..."
 
-        cityCountry = city
+        cityCountry = "${weatherResult.city.name}, ${weatherResult.city.country} ..."
         binding.editTextCityInputCurrent.hint = cityCountry
 
-        val population = "Soul: ${weatherResult.city.population}"
+        var population = "Soul: ${weatherResult.city.population / 1000000f} m"
         if (weatherResult.city.population > 0) {
             binding.textViewPopulation.text = population
         } else {
-            binding.textViewPopulation.text = ""
+            population = "Soul: no data"
+            binding.textViewPopulation.text = population
         }
+    }
+
+    private fun updateAirPollution(it: AirPollutionResult) {
+        val aqi = aqiCalculation(it.list[0].components)
+        var color: Int = rgb(255, 255, 255)
+        val text = "AQI: $aqi"
+        val pair = getAqiTextColor(aqi, text, color)
+        color = pair.first
+        binding.airPollutionCurrent.setBackgroundColor(color)
+        binding.airPollutionCurrent.text = text
     }
 
     private fun topUiRendering(visible: Boolean) {
@@ -513,8 +531,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     //UI behavior when in full screen mode
     private fun fullscreenOpen() {
         binding.imageViewFullscreenButton.imageTintList =
-            ColorStateList.valueOf(Color.rgb(117, 117, 117))
-        binding.imageViewIconCurrent.setColorFilter(Color.BLACK)
+            ColorStateList.valueOf(rgb(117, 117, 117))
         binding.constraintLayoutTop.isVisible = false
         TransitionManager.beginDelayedTransition(binding.root, transitionBottom)
         binding.map.isVisible = true
@@ -523,8 +540,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
 
     private fun fullscreenClose() {
         binding.imageViewFullscreenButton.imageTintList =
-            ColorStateList.valueOf(Color.rgb(206, 206, 206))
-        binding.imageViewIconCurrent.colorFilter = null
+            ColorStateList.valueOf(rgb(206, 206, 206))
         TransitionManager.beginDelayedTransition(binding.root, transitionTop)
         binding.constraintLayoutTop.isVisible = true
         binding.map.isVisible = true

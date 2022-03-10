@@ -8,233 +8,291 @@
     app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/item_eight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="2dp"
-        android:paddingBottom="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/textView_city_country_later"
-            android:layout_width="0dp"
+            android:id="@+id/item_eight"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textAlignment="viewStart"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView_icon_later"
-            app:layout_constraintEnd_toStartOf="@+id/guideline15_later"
+            android:elevation="2dp"
+            android:paddingBottom="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView_icon_later"
-            tools:text="London, GB" />
+            app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView_feelsLike_later"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:rotation="0"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_temp_later_text"
-            tools:text="Feels like" />
+                android:id="@+id/textView_city_country_later"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAlignment="viewStart"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_icon_later"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView_icon_later"
+                tools:text="London, GB"
+                app:layout_constraintEnd_toStartOf="@+id/divider6"
+                android:layout_marginEnd="16dp" />
 
         <TextView
-            android:id="@+id/textView_description_later_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline15_later"
-            app:layout_constraintTop_toBottomOf="@+id/textView_date_later"
-            tools:text="Clouds" />
+                android:id="@+id/textView_feelsLike_later"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:rotation="0"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_temp_later_text"
+                tools:text="Feels like"
+                android:layout_marginTop="4dp" />
+
+        <TextView
+                android:id="@+id/textView_description_later_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                tools:text="Clouds"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_temp_later_text"
+                app:layout_constraintStart_toEndOf="@+id/divider6" />
 
         <ImageView
-            android:id="@+id/imageView_icon_later"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:adjustViewBounds="false"
-            android:contentDescription="@string/weather_condition_icon"
-            android:scaleType="centerInside"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/img" />
+                android:id="@+id/imageView_icon_later"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:adjustViewBounds="false"
+                android:contentDescription="@string/weather_condition_icon"
+                android:scaleType="centerInside"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/img" />
 
         <TextView
-            android:id="@+id/textView_date_later"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAlignment="center"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline15_later"
-            app:layout_constraintTop_toBottomOf="@+id/divider3_later"
-            tools:text="Thu, 6 Jan 2022" />
+                android:id="@+id/textView_date_later"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Thu, 6 Jan 2022"
+                app:layout_constraintBottom_toTopOf="@+id/divider3_later"
+                android:layout_marginBottom="2dp"
+                app:layout_constraintStart_toEndOf="@+id/divider6" />
 
         <View
-            android:id="@+id/divider3_later"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="4dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="@+id/textView_hour_later_value"
-            app:layout_constraintStart_toStartOf="@+id/textView_hour_later_value"
-            app:layout_constraintTop_toBottomOf="@+id/textView_hour_later_value" />
+                android:id="@+id/divider3_later"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintStart_toStartOf="@+id/textView_date_later"
+                app:layout_constraintEnd_toEndOf="@+id/textView_date_later"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintBottom_toTopOf="@+id/textView_description_later_text"
+                android:layout_marginBottom="2dp" />
 
         <TextView
-            android:id="@+id/textView_temp_later_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toTopOf="@+id/imageView_wind_icon_later"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView_city_country_later"
-            app:layout_constraintVertical_chainStyle="spread_inside"
-            tools:text="+28" />
+                android:id="@+id/textView_temp_later_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="48sp"
+                tools:text="+28"
+                android:includeFontPadding="false"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/textView_city_country_later"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp" />
 
         <TextView
-            android:id="@+id/textView_wind_value_later"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="7dp"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView_wind_icon_later"
-            app:layout_constraintStart_toEndOf="@+id/imageView_wind_icon_later"
-            app:layout_constraintTop_toTopOf="@+id/imageView_wind_icon_later"
-            tools:text="wind" />
+                android:id="@+id/textView_wind_value_later"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_wind_icon_later"
+                app:layout_constraintStart_toEndOf="@+id/imageView_wind_icon_later"
+                app:layout_constraintTop_toTopOf="@+id/imageView_wind_icon_later"
+                tools:text="wind" />
 
         <ImageView
-            android:id="@+id/imageView_humidity_icon_later"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="4dp"
-            android:contentDescription="@string/humidity_icon"
-            android:src="@drawable/ic_wi_humidity"
-            app:layout_constraintBottom_toBottomOf="@+id/textView_humidity_later_value"
-            app:layout_constraintEnd_toStartOf="@+id/textView_humidity_later_value"
-            app:layout_constraintTop_toTopOf="@+id/textView_humidity_later_value"
-            app:tint="#0091EA" />
+                android:id="@+id/imageView_humidity_icon_later"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:contentDescription="@string/humidity_icon"
+                android:src="@drawable/ic_wi_humidity"
+                app:tint="#0091EA"
+                app:layout_constraintEnd_toStartOf="@+id/textView_humidity_later_value"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_humidity_later_value"
+                app:layout_constraintTop_toTopOf="@+id/textView_humidity_later_value" />
 
         <TextView
-            android:id="@+id/textView_humidity_later_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView_wind_icon_later"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView_wind_icon_later"
-            app:layout_constraintTop_toTopOf="@+id/imageView_wind_icon_later"
-            tools:text="35%" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline15_later"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
+                android:id="@+id/textView_humidity_later_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="35%"
+                app:layout_constraintTop_toTopOf="@+id/imageView_wind_icon_later"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_wind_icon_later"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintStart_toEndOf="@+id/imageView_wind_icon_later"
+                app:layout_constraintHorizontal_bias="0.5" />
 
         <ImageView
-            android:id="@+id/imageView_pressure_icon_later"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="@string/atmospheric_pressure_icon"
-            android:src="@drawable/ic_wi_barometer"
-            app:layout_constraintEnd_toStartOf="@+id/imageView_wind_icon_later"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_visibility_later_value"
-            app:tint="#00C853" />
+                android:id="@+id/imageView_pressure_icon_later"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:contentDescription="@string/atmospheric_pressure_icon"
+                android:src="@drawable/ic_wi_barometer"
+                app:tint="#56A967"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/imageView_wind_icon_later"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_uv_icon_later"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp" />
 
         <TextView
-            android:id="@+id/textView_pressure_later_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView_pressure_icon_later"
-            app:layout_constraintStart_toEndOf="@+id/imageView_pressure_icon_later"
-            app:layout_constraintTop_toTopOf="@+id/imageView_pressure_icon_later"
-            tools:text="978hpa" />
+                android:id="@+id/textView_pressure_later_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_pressure_icon_later"
+                app:layout_constraintStart_toEndOf="@+id/imageView_pressure_icon_later"
+                app:layout_constraintTop_toTopOf="@+id/imageView_pressure_icon_later"
+                tools:text="978hpa" />
 
         <TextView
-            android:id="@+id/textView_visibility_later_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline15_later"
-            app:layout_constraintTop_toBottomOf="@+id/textView_description_later_text"
-            tools:text="visibility" />
+                android:id="@+id/textView_visibility_later_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                tools:text="visibility"
+                app:layout_constraintTop_toTopOf="@+id/textView_feelsLike_later"
+                app:layout_constraintStart_toEndOf="@+id/divider6" />
 
         <TextView
-            android:id="@+id/textView_hour_later_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline15_later"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_icon_later"
-            tools:text="Hour" />
+                android:id="@+id/textView_hour_later_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Hour"
+                app:layout_constraintTop_toTopOf="@+id/textView_city_country_later"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_city_country_later"
+                app:layout_constraintStart_toEndOf="@+id/divider6" />
 
         <ImageView
-            android:id="@+id/imageView_uv_icon_later"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:padding="1.5dp"
-            android:src="@drawable/uvi_new"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView_icon_later"
-            app:layout_constraintStart_toStartOf="@+id/guideline15_later"
-            app:layout_constraintTop_toTopOf="@+id/imageView_icon_later"
-            app:tint="#FFD600"
-                android:contentDescription="@string/uv" />
+                android:id="@+id/imageView_uv_icon_later"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="2dp"
+                android:src="@drawable/uvi_new"
+                app:tint="#FFD600"
+                android:contentDescription="@string/uv"
+                app:layout_constraintTop_toBottomOf="@+id/divider2"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="@+id/imageView_pressure_icon_later" />
 
         <TextView
-            android:id="@+id/textView_uv_later_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="@string/uv"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView_uv_icon_later"
-            app:layout_constraintStart_toEndOf="@+id/imageView_uv_icon_later"
-            app:layout_constraintTop_toTopOf="@+id/imageView_uv_icon_later" />
+                android:id="@+id/textView_uv_later_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/uv"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_uv_icon_later"
+                app:layout_constraintStart_toEndOf="@+id/imageView_uv_icon_later"
+                app:layout_constraintTop_toTopOf="@+id/imageView_uv_icon_later" />
 
         <ImageView
-            android:id="@+id/imageView_wind_icon_later"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_wind"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView_pressure_icon_later"
-            app:layout_constraintEnd_toStartOf="@+id/textView_humidity_later_value"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/imageView_pressure_icon_later"
-            app:layout_constraintTop_toTopOf="@+id/imageView_pressure_icon_later"
-            app:tint="#00B8D4"
-                android:contentDescription="@string/wind_icon" />
+                android:id="@+id/imageView_wind_icon_later"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_wind"
+                app:tint="#00B8D4"
+                android:contentDescription="@string/wind_icon"
+                app:layout_constraintStart_toEndOf="@+id/imageView_pressure_icon_later"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/textView_humidity_later_value"
+                app:layout_constraintTop_toTopOf="@+id/imageView_pressure_icon_later"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_pressure_icon_later" />
+
+        <View
+                android:id="@+id/divider2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_feelsLike_later"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp" />
+
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewPollutionLater"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/textView_air_quality"
+                app:cardElevation="0dp"
+                app:cardMaxElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_air_quality">
+
+            <TextView
+                    tools:text="index "
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/air_pollution_later_value"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:textColor="#FFFFFF"
+                    android:background="#FFFFFF"
+                    android:textAlignment="center"
+                    android:includeFontPadding="false" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+                android:text="@string/air_quality_index"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewStart"
+                android:layout_width="0dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:id="@+id/textView_air_quality"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_uv_later_value"
+                app:layout_constraintStart_toEndOf="@+id/divider6"
+                app:layout_constraintEnd_toStartOf="@+id/cardViewPollutionLater"
+                android:layout_marginEnd="8dp" />
+
+        <View
+                android:id="@+id/divider6"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageView_wind_icon_later" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

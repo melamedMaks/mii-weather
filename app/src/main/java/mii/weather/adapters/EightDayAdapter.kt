@@ -33,8 +33,8 @@ class EightDayAdapter(private val oneCallWeatherResult: OneCallWeatherResult) :
 
             holder.binding.textViewTempEightValue.text = tempToIntAndString(temp.day)
 
-            val tempDayFeels = "Feels like: ${tempToIntAndString(feelsLike.day)}"
-            holder.binding.textViewDayTempFeelsEightValue.text = tempDayFeels
+//            val tempDayFeels = "Feels like: ${tempToIntAndString(feelsLike.day)}"
+//            holder.binding.textViewDayTempFeelsEightValue.text = tempDayFeels
 
             holder.binding.textViewMinTempEight.text = tempToIntAndString(temp.min)
             holder.binding.textViewMaxTempEight.text = tempToIntAndString(temp.max)
@@ -47,13 +47,13 @@ class EightDayAdapter(private val oneCallWeatherResult: OneCallWeatherResult) :
             holder.binding.textViewSunriseEightValue.text =
                 getLocalHourFromTimeStamp(sunrise, timeZone)
 
-            val morningTemp = "Morning: ${tempToIntAndString(temp.morn)}"
+            val morningTemp = "Morn: ${tempToIntAndString(temp.morn)}"
             holder.binding.textViewMorTempEightValue.text = morningTemp
 
             val dayTemp = "Day: ${tempToIntAndString(temp.day)}"
             holder.binding.textViewDayTempEightValue.text = dayTemp
 
-            val eveningTemp = "Evening: ${tempToIntAndString(temp.eve)}"
+            val eveningTemp = "Eve: ${tempToIntAndString(temp.eve)}"
             holder.binding.textViewEveTempEightValue.text = eveningTemp
 
             val nightTemp = "Night: ${tempToIntAndString(temp.night)}"
@@ -66,7 +66,7 @@ class EightDayAdapter(private val oneCallWeatherResult: OneCallWeatherResult) :
 
             holder.binding.textViewUvEightValue.text = uvi.toString()
             holder.binding.textViewDescriptionEightValue.text = firstCharUp(weather[0].description)
-            val pressure = "${pressure} hPa"
+            val pressure = "$pressure hPa"
             holder.binding.textViewPressureEightValue.text = pressure
 
             val moonset = getLocalHourFromTimeStamp(moonset, timeZone)

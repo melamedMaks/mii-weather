@@ -17,11 +17,16 @@ import kotlinx.coroutines.launch
 
 import mii.weather.adapters.LaterTodayAdapter
 import mii.weather.databinding.LaterTodayWeatherFragmentBinding
+import mii.weather.models.AirPollutionResult
 import mii.weather.ui.CommonViewModel
 import mii.weather.models.OneCallWeatherResult
+import mii.weather.network.WeatherRepository.Companion.airPollutionResultUpdated
+import mii.weather.network.WeatherRepository.Companion.oneCallWeatherResultUpdated
 
 class LaterTodayWeatherFragment : Fragment() {
 
+    private lateinit var oneCallWeatherResult: OneCallWeatherResult
+    private lateinit var airPollutionResult: AirPollutionResult
     private var _binding: LaterTodayWeatherFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -42,12 +47,13 @@ class LaterTodayWeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initDataObserver()
+        airPollutionObserver()
     }
 
     private fun initDataObserver() {
         commonViewModel.oneCallWeatherResult.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
-                updateLaterTodayRecycler(it)
+                oneCallWeatherResult = it
                 if (binding.coverLater.isVisible){
                     TransitionManager.beginDelayedTransition(binding.root, transition)
                     binding.coverLater.isVisible = false
@@ -56,13 +62,27 @@ class LaterTodayWeatherFragment : Fragment() {
         }
     }
 
+    private fun airPollutionObserver(){
+        commonViewModel.airPollutionResult.observe(viewLifecycleOwner) {
+            lifecycleScope.launch{
+                airPollutionResult = it
+                updateLaterTodayRecycler(oneCallWeatherResult, airPollutionResult)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
             commonViewModel.getEightWeatherData()
+        oneCallWeatherResultUpdated?.let { airPollutionResultUpdated?.let { it1 ->
+            updateLaterTodayRecycler(it,
+                it1
+            )
+        } }
     }
 
-    private fun updateLaterTodayRecycler(it: OneCallWeatherResult) {
-        binding.recyclerLaterToday.adapter = LaterTodayAdapter(it)
+    private fun updateLaterTodayRecycler(oneCallWeatherResult: OneCallWeatherResult, airPollutionResult: AirPollutionResult) {
+        binding.recyclerLaterToday.adapter = LaterTodayAdapter(oneCallWeatherResult, airPollutionResult)
         binding.recyclerLaterToday.layoutManager = LinearLayoutManager(
             requireContext(), LinearLayoutManager.VERTICAL, false
         )

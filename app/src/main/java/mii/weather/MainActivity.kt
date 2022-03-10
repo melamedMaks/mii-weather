@@ -35,17 +35,25 @@ class MainActivity : AppCompatActivity() {
         }.attach()
     }
 
+    //caching onBackPressed event
     override fun onBackPressed() {
         var isBackHandled = false
+        //getting current item index
         val currentItem = viewPager.currentItem
+        //retrieving the current fragment that renders in viewPager
         val currentFragment = sectionsPagerAdapter.createFragment(currentItem)
 
         if (currentFragment is ActivityBackPressedCallback) {
             isBackHandled = currentFragment.handleActivityOnBackPressed()
+            println(isBackHandled)
         }
+
         if (!isBackHandled) {
+            //check the index
             if (currentItem > 0)
+                //returns previous
                 viewPager.currentItem = currentItem - 1
+            //else calls super
             else {
                 super.onBackPressed()
             }

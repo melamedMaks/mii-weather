@@ -14,6 +14,7 @@ import mii.weather.network.WeatherRepository
 import mii.weather.network.WeatherRepository.Companion.oneCallWeatherResultUpdated
 import mii.weather.network.WeatherRepository.Companion.weatherResultUpdated
 import mii.weather.models.*
+import mii.weather.network.WeatherRepository.Companion.airPollutionResultUpdated
 import java.net.URL
 
 class CommonViewModel(application: Application) : AndroidViewModel(application) {
@@ -23,6 +24,9 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
 
     private var _oneCallWeatherResult = MutableLiveData<OneCallWeatherResult>()
     val oneCallWeatherResult: LiveData<OneCallWeatherResult> get() = _oneCallWeatherResult
+
+    private var _airPollutionResult = MutableLiveData<AirPollutionResult>()
+    val airPollutionResult: LiveData<AirPollutionResult> get() = _airPollutionResult
 
     private var _errorHandler = MutableLiveData<Boolean>()
     val errorHandler: LiveData<Boolean> get() = _errorHandler
@@ -38,6 +42,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
                 if (WeatherRepository.getFromDataBase(context, query)) {
                     value = weatherResultUpdated
                     getEightWeatherData()
+                    getairPollutionData()
                     WeatherRepository.dataBaseUpdate(context, query)
                 } else {
                     val weatherResult = WeatherRepository.getWeatherByQuery(query)
@@ -46,6 +51,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
                     val lat = weatherResult.city.coord.lat.toString()
                     val lon = weatherResult.city.coord.lon.toString()
                     getOneCallWeatherByLatLon(lat, lon, query, context)
+                    getAirPollutionByLatLon(lat, lon, query, context)
                     onLineUiUpdated = true
                 }
             }
@@ -59,6 +65,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
                 val weatherResult = WeatherRepository.getWeatherByLatLon(lat, lon)
                 weatherResultUpdated = weatherResult
                 value = weatherResult
+                getAirPollutionByLatLon(lat, lon, "", context)
                 getOneCallWeatherByLatLon(lat, lon,"", context)
                 onLineUiUpdated = true
             }
@@ -78,6 +85,17 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    private fun getAirPollutionByLatLon(lat: String, lon: String, query: String, context: Context) {
+        _airPollutionResult.apply {
+            viewModelScope.launch(handler) {
+                val airPollutionResult = WeatherRepository.getAirPollutionByLatLon(lat, lon)
+                airPollutionResultUpdated = airPollutionResult
+                WeatherRepository.dataBaseUpdate(context, query)
+                value = airPollutionResult
+            }
+        }
+    }
+
     fun getWeatherLastSavedInDB(context: Context) {
         _weatherResult.apply {
             viewModelScope.launch(handler) {
@@ -85,6 +103,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
                     onLineUiUpdated = false
                     value = weatherResultUpdated
                     getEightWeatherData()
+                    getairPollutionData()
                 }
             }
         }
@@ -103,6 +122,16 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
             _oneCallWeatherResult.apply {
                 viewModelScope.launch(handler) {
                     value = oneCallWeatherResultUpdated
+                }
+            }
+        }
+    }
+
+    fun getairPollutionData() {
+        if (airPollutionResultUpdated != null) {
+            _airPollutionResult.apply {
+                viewModelScope.launch(handler) {
+                    value = airPollutionResultUpdated
                 }
             }
         }

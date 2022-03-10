@@ -8,7 +8,7 @@ import mii.weather.dao.WeatherDAO
 import mii.weather.entities.WeatherData
 
 
-const val DB_VERSION = 1
+const val DB_VERSION = 2
 
 const val DB_NAME = "WeatherDB"
 

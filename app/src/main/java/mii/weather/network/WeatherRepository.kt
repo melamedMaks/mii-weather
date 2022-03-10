@@ -11,6 +11,7 @@ class WeatherRepository {
     companion object {
         lateinit var weatherResultUpdated: WeatherResult
         var oneCallWeatherResultUpdated: OneCallWeatherResult? = null
+        var airPollutionResultUpdated: AirPollutionResult? = null
         lateinit var cityCountryCommonUse: String
 
 
@@ -22,6 +23,17 @@ class WeatherRepository {
                 val weatherResult = CurrentWeatherService.create().getWeatherDataByLatLon(lat, lon)
                 cityCountryCommonUse = "${weatherResult.city.name}, ${weatherResult.city.country}"
                 weatherResult
+            }
+        }
+
+        suspend fun getAirPollutionByLatLon(
+            lat: String,
+            lon: String
+        ): AirPollutionResult {
+            return withContext(Dispatchers.IO) {
+                val airPollutionResult = AirPollutionService.create()
+                    .getAirPollutionByLatLon(lat, lon)
+                airPollutionResult
             }
         }
 
@@ -57,11 +69,14 @@ class WeatherRepository {
                     db.weatherDAO().deleteById(weatherData.id)
                 }
                 if ((id[0] == cityName || (id.size > 1 && id[1] == cityName)) && unixDiff(weatherData.date, getCurrentUnix())) {
-                    weatherResultUpdated = fromJsonCurrent(weatherData.weatherResultJson)!!
+                    weatherResultUpdated =
+                        fromJsonCurrent(weatherData.weatherResultJson)!!
                     cityCountryCommonUse =
                         "${weatherResultUpdated.city.name}, ${weatherResultUpdated.city.country}"
                     oneCallWeatherResultUpdated =
-                        fromJsonOneCall(weatherData.oneCallWeatherResultJson)!!
+                        fromJsonOneCall(weatherData.oneCallWeatherResultJson)
+                    airPollutionResultUpdated =
+                        fromJsonAirPollution(weatherData.airPollutionResult)
                     return true
                 }
             }
@@ -77,7 +92,8 @@ class WeatherRepository {
                 cityCountryCommonUse =
                     "${weatherResultUpdated.city.name}, ${weatherResultUpdated.city.country}"
                 oneCallWeatherResultUpdated =
-                    fromJsonOneCall(weatherResult[index].oneCallWeatherResultJson)!!
+                    fromJsonOneCall(weatherResult[index].oneCallWeatherResultJson)
+                airPollutionResultUpdated = fromJsonAirPollution(weatherResult[index].airPollutionResult)
                 return true
             }
             return false
@@ -96,7 +112,8 @@ class WeatherRepository {
 
             val weatherData = WeatherData(
                 id = id, toJsonCurrentWeather(weatherResultUpdated),
-                toJsonOneCallWeather(oneCallWeatherResultUpdated), date
+                toJsonOneCallWeather(oneCallWeatherResultUpdated), toJsonAirPollution(
+                    airPollutionResultUpdated), date
             )
 
            db.weatherDAO().addWeather(weatherData)

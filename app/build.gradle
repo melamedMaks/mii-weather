@@ -14,7 +14,7 @@ android {
         applicationId "mii.weather"
         minSdk 25
         targetSdk 31
-        versionCode 4
+        versionCode 7
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -42,11 +42,11 @@ dependencies {
 
     def lifecycle_version = "2.4.1"
     def retrofit_version = "2.9.0"
-    def room_version = "2.4.1"
+    def room_version = "2.4.2"
     def nav_version = "2.4.1"
 
     //for tab layout in viewPager2
-    implementation("com.google.android.material:material:1.6.0-alpha02")
+    implementation("com.google.android.material:material:1.6.0-alpha03")
 
     //nav component
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

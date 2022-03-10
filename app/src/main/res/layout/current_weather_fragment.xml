@@ -19,8 +19,8 @@
             android:translationZ="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/map">
+            app:layout_constraintBottom_toTopOf="@+id/map"
+            app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
                 android:id="@+id/imageView_splash_screen_before_ui"
@@ -30,7 +30,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/mii_logo"
-                android:contentDescription="@string/app_logo" />
+                android:contentDescription="@string/app_logo"
+                android:background="#FFFFFF" />
 
         <TextView
                 android:id="@+id/textView_splash_screen"
@@ -65,7 +66,9 @@
             android:translationZ="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/img" />
+            tools:src="@drawable/img"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp" />
 
     <ImageView
             android:id="@+id/imageView_pointer_current"
@@ -96,33 +99,34 @@
                 android:id="@+id/textView_city_country_current"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="30dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textAlignment="viewStart"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/guideline15"
+                app:layout_constraintEnd_toStartOf="@+id/divider5"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="London, GB" />
+                tools:text="London, GB"
+                android:layout_marginEnd="16dp" />
 
         <TextView
                 android:id="@+id/textView_feelsLike_current"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="24dp"
                 android:rotation="0"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_temp_current_text"
-                tools:text="Feels like" />
+                tools:text="Feels like"
+                android:layout_marginTop="4dp" />
 
         <TextView
                 android:id="@+id/textView_description_current_text"
@@ -132,9 +136,8 @@
                 android:textSize="11sp"
                 android:textStyle="bold"
                 tools:text="Clouds"
-                app:layout_constraintStart_toStartOf="@+id/guideline15"
-                app:layout_constraintTop_toBottomOf="@+id/textView_feel_value"
-                android:layout_marginTop="4dp" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_feelsLike_current"
+                app:layout_constraintStart_toEndOf="@+id/divider5" />
 
         <TextView
                 android:id="@+id/textView_date_current"
@@ -143,9 +146,10 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/guideline15"
-                app:layout_constraintTop_toTopOf="@+id/textView_temp_current_text"
-                tools:text="Thu, 6 Jan 2022" />
+                tools:text="Thu, 6 Jan 2022"
+                app:layout_constraintBottom_toTopOf="@+id/divider3"
+                android:layout_marginBottom="2dp"
+                app:layout_constraintStart_toEndOf="@+id/divider5" />
 
         <TextView
                 android:id="@+id/textView_min_temp_current"
@@ -154,10 +158,9 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/textView_city_country_current"
-                app:layout_constraintStart_toStartOf="@+id/guideline15"
-                app:layout_constraintTop_toTopOf="@+id/textView_city_country_current"
-                tools:text="-77" />
+                tools:text="-77"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_city_country_current"
+                app:layout_constraintStart_toEndOf="@+id/divider5" />
 
         <TextView
                 android:id="@+id/textView_max_temp_current"
@@ -186,51 +189,52 @@
                 android:id="@+id/divider3"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_marginTop="4dp"
                 android:background="?android:attr/listDivider"
-                app:layout_constraintEnd_toEndOf="@+id/textView_date_current"
+                app:layout_constraintBottom_toTopOf="@+id/textView_feel_value"
                 app:layout_constraintStart_toStartOf="@+id/textView_date_current"
-                app:layout_constraintTop_toBottomOf="@+id/textView_date_current" />
+                app:layout_constraintEnd_toEndOf="@+id/textView_date_current"
+                android:layout_marginBottom="2dp" />
 
         <TextView
                 android:id="@+id/textView_temp_current_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textSize="48sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_city_country_current"
-                tools:text="+28" />
+                tools:text="+28"
+                android:includeFontPadding="false" />
 
         <ImageView
                 android:id="@+id/imageView_sunrise_current_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:contentDescription="@string/sunrise_icon"
                 android:src="@drawable/ic_sunrise"
-                app:layout_constraintEnd_toStartOf="@+id/imageView_uv_icon_current"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:tint="#EC6F4D"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_population"
-                app:tint="#EC6F4D" />
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/imageView_uv_icon_current"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
         <ImageView
                 android:id="@+id/imageView_sunset_current_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginEnd="4dp"
                 android:contentDescription="@string/sunset_icon"
                 android:src="@drawable/ic_sunset"
-                app:layout_constraintBottom_toBottomOf="@+id/textView_sunset_current_value"
+                app:tint="#EC6F4D"
                 app:layout_constraintEnd_toStartOf="@+id/textView_sunset_current_value"
+                android:layout_marginEnd="4dp"
                 app:layout_constraintTop_toTopOf="@+id/textView_sunset_current_value"
-                app:tint="#EC6F4D" />
+                app:layout_constraintBottom_toBottomOf="@+id/textView_sunset_current_value" />
 
         <TextView
                 android:id="@+id/textView_sunrise_current_value"
@@ -248,34 +252,38 @@
                 android:id="@+id/textView_sunset_current_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView_uv_icon_current"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView_uv_icon_current"
                 app:layout_constraintTop_toTopOf="@+id/imageView_uv_icon_current"
-                tools:text="06:00" />
+                tools:text="06:00"
+                app:layout_constraintStart_toEndOf="@+id/imageView_uv_icon_current"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="24dp" />
 
         <TextView
                 android:id="@+id/textView_population"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAlignment="viewStart"
+                android:layout_width="0dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textSize="11sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/guideline15"
-                app:layout_constraintTop_toBottomOf="@+id/textView_visibility_current_value"
-                tools:text="Population" />
+                tools:text="Population"
+                app:layout_constraintStart_toStartOf="@+id/textView_description_current_text"
+                android:layout_marginTop="2dp"
+                app:layout_constraintTop_toBottomOf="@+id/textView_description_current_text"
+                app:layout_constraintEnd_toStartOf="@+id/cardView"
+                android:layout_marginEnd="8dp" />
 
         <TextView
                 android:id="@+id/textView_wind_current_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
+                android:layout_marginStart="4dp"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView_wind_icon_current"
@@ -287,44 +295,35 @@
                 android:id="@+id/imageView_humidity_icon_current"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="8dp"
                 android:contentDescription="@string/humidity_icon"
                 android:src="@drawable/ic_wi_humidity"
-                app:layout_constraintEnd_toEndOf="@+id/imageView_sunset_current_icon"
+                app:tint="#0091EA"
                 app:layout_constraintStart_toStartOf="@+id/imageView_sunset_current_icon"
                 app:layout_constraintTop_toBottomOf="@+id/imageView_sunset_current_icon"
-                app:tint="#0091EA" />
+                android:layout_marginTop="4dp" />
 
         <TextView
                 android:id="@+id/textView_humidity_current_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView_humidity_icon_current"
-                app:layout_constraintStart_toEndOf="@+id/imageView_humidity_icon_current"
                 app:layout_constraintTop_toTopOf="@+id/imageView_humidity_icon_current"
-                tools:text="35%" />
-
-        <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
+                tools:text="35%"
+                app:layout_constraintStart_toEndOf="@+id/imageView_humidity_icon_current"
+                android:layout_marginStart="4dp" />
 
         <ImageView
                 android:id="@+id/imageView_pressure_icon_current"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="8dp"
                 android:contentDescription="@string/atmospheric_pressure_icon"
                 android:src="@drawable/ic_wi_barometer"
-                app:layout_constraintEnd_toEndOf="@+id/imageView_sunrise_current_icon"
-                app:layout_constraintStart_toStartOf="@+id/imageView_sunrise_current_icon"
+                app:tint="#56A967"
                 app:layout_constraintTop_toBottomOf="@+id/imageView_sunrise_current_icon"
-                app:tint="#00C853" />
+                app:layout_constraintStart_toStartOf="@+id/imageView_sunrise_current_icon"
+                android:layout_marginTop="4dp" />
 
         <TextView
                 android:id="@+id/textView_pressure_current_value"
@@ -340,13 +339,20 @@
 
         <TextView
                 android:id="@+id/textView_visibility_current_value"
-                android:layout_width="wrap_content"
+                android:textAlignment="viewStart"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:textSize="11sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/guideline15"
-                app:layout_constraintTop_toBottomOf="@+id/textView_description_current_text"
-                tools:text="visibility" />
+                tools:text="visibility"
+                app:layout_constraintStart_toStartOf="@+id/textView_feelsLike_current"
+                app:layout_constraintTop_toBottomOf="@+id/textView_feelsLike_current"
+                android:layout_marginTop="2dp"
+                app:layout_constraintEnd_toStartOf="@+id/divider5"
+                android:layout_marginEnd="16dp" />
 
         <TextView
                 android:id="@+id/textView_feel_value"
@@ -355,8 +361,8 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 tools:text="Mii"
-                app:layout_constraintTop_toBottomOf="@+id/divider3"
-                app:layout_constraintStart_toStartOf="@+id/guideline15" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_temp_current_text"
+                app:layout_constraintStart_toEndOf="@+id/divider5" />
 
         <ImageView
                 android:id="@+id/imageView_uv_icon_current"
@@ -364,13 +370,13 @@
                 android:layout_height="30dp"
                 android:padding="1.5dp"
                 android:src="@drawable/uvi_new"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView_sunrise_current_icon"
-                app:layout_constraintEnd_toStartOf="@+id/textView_sunset_current_value"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView_sunrise_current_icon"
-                app:layout_constraintTop_toTopOf="@+id/imageView_sunrise_current_icon"
                 app:tint="#FFD600"
-                android:contentDescription="@string/uv" />
+                android:contentDescription="@string/uv"
+                app:layout_constraintStart_toEndOf="@+id/imageView_sunrise_current_icon"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/textView_sunset_current_value"
+                app:layout_constraintTop_toTopOf="@+id/imageView_sunrise_current_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_sunrise_current_icon" />
 
         <TextView
                 android:id="@+id/textView_uv_current_value"
@@ -388,13 +394,61 @@
                 android:id="@+id/imageView_wind_icon_current"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_wind"
-                app:layout_constraintEnd_toEndOf="@+id/imageView_uv_icon_current"
-                app:layout_constraintStart_toStartOf="@+id/imageView_uv_icon_current"
-                app:layout_constraintTop_toBottomOf="@+id/imageView_uv_icon_current"
                 app:tint="#00B8D4"
-                android:contentDescription="@string/wind_icon" />
+                android:contentDescription="@string/wind_icon"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_uv_icon_current"
+                app:layout_constraintStart_toStartOf="@+id/imageView_uv_icon_current"
+                android:layout_marginTop="4dp" />
+
+        <View
+                android:id="@+id/divider4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@+id/textView_population"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp" />
+
+        <androidx.cardview.widget.CardView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                app:cardElevation="0dp"
+                app:cardMaxElevation="0dp"
+                android:id="@+id/cardView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/divider4"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="24dp">
+
+            <TextView
+                    tools:text="Air: 1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/air_pollution_current"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:textAlignment="center"
+                    android:gravity="center|center_horizontal|center_vertical"
+                    android:foregroundGravity="center_vertical|center"
+                    android:background="#56A967"
+                    android:includeFontPadding="false" />
+        </androidx.cardview.widget.CardView>
+
+        <View
+                android:id="@+id/divider5"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageView_uv_icon_current" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -462,7 +516,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:allowUndo="true"
-            android:autoText="true"
             android:backgroundTint="#00FFFFFF"
             android:cursorVisible="true"
             android:elegantTextHeight="false"
