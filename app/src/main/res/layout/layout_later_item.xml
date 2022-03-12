@@ -8,7 +8,7 @@
     app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/item_eight"
+            android:id="@+id/item_later"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="2dp"
@@ -293,6 +293,17 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imageView_wind_icon_later" />
+
+        <ImageView
+                android:layout_width="11dp"
+                android:layout_height="11dp"
+                app:srcCompat="@drawable/ic_up_arrow"
+                android:id="@+id/later_wind_arrow"
+                app:layout_constraintStart_toEndOf="@+id/textView_wind_value_later"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_wind_value_later"
+                app:layout_constraintTop_toTopOf="@+id/textView_wind_value_later"
+                android:layout_marginStart="4dp"
+                app:tint="#757575" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

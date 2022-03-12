@@ -76,7 +76,7 @@ class WeatherRepository {
                     oneCallWeatherResultUpdated =
                         fromJsonOneCall(weatherData.oneCallWeatherResultJson)
                     airPollutionResultUpdated =
-                        fromJsonAirPollution(weatherData.airPollutionResult)
+                        fromJsonAirPollution(weatherData.airPollutionResultJson)
                     return true
                 }
             }
@@ -93,7 +93,7 @@ class WeatherRepository {
                     "${weatherResultUpdated.city.name}, ${weatherResultUpdated.city.country}"
                 oneCallWeatherResultUpdated =
                     fromJsonOneCall(weatherResult[index].oneCallWeatherResultJson)
-                airPollutionResultUpdated = fromJsonAirPollution(weatherResult[index].airPollutionResult)
+                airPollutionResultUpdated = fromJsonAirPollution(weatherResult[index].airPollutionResultJson)
                 return true
             }
             return false

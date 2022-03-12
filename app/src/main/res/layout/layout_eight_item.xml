@@ -435,6 +435,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imageView_uv_icon_eight" />
 
+        <ImageView
+                android:layout_width="11dp"
+                android:layout_height="11dp"
+                app:srcCompat="@drawable/ic_up_arrow"
+                android:id="@+id/eight_wind_arrow"
+                app:layout_constraintStart_toEndOf="@+id/textView_wind_value_eight"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_wind_value_eight"
+                app:layout_constraintTop_toTopOf="@+id/textView_wind_value_eight"
+                android:layout_marginStart="4dp"
+                app:tint="#757575" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

@@ -10,8 +10,8 @@ data class OneCallWeatherResult(
     val timezoneOffset: Long,
     val current: Current,
     val daily: List<DailyList>,
-    val hourly: List<HourlyList>
-//    val alerts: List<Alerts>
+    val hourly: List<HourlyList>,
+    val alerts: List<Alerts>?
 )
 
 data class Current(
@@ -126,15 +126,12 @@ data class HourlyWeather(
     val icon: String
 )
 
-//data class Alerts(
-//    val sender_name: String,
-//    val event: String,
-//    val start: Long,
-//    val end: Long,
-//    val description: String,
-//    val tags: List<Tags>
-//)
-//
-//data class Tags(
-//    val tags: String
-//)
+data class Alerts(
+    @SerializedName("sender_name")
+    val senderName: String,
+    val event: String,
+    val start: Long,
+    val end: Long,
+    val description: String,
+    val tags: List<String>
+)

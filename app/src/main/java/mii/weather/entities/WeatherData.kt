@@ -10,6 +10,6 @@ data class WeatherData(
     val id: String,
     val weatherResultJson: String,
     val oneCallWeatherResultJson: String,
-    val airPollutionResult: String,
+    val airPollutionResultJson: String,
     val date: Long?
 )

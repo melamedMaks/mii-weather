@@ -55,6 +55,8 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     private val launcher = activityResultLauncher()
     private lateinit var lat: String
     private lateinit var lon: String
+    private var isUIUpdatedByCurrentLocation = false
+
 
     //google maps SDK vars and sets
     private lateinit var map: GoogleMap
@@ -63,20 +65,15 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     private val zoomOut: Float = 0f
 
     //settings for onLocationChangelistener logic
-    private var latLocal: Double = 0.0
-    private var lonLocal: Double = 0.0
-    private val locationRange: Float = 50f
-    private val timeRange: Long = 3600 * 1000
-    private var lastSavedTimestamp: Long = 0
 
-    private var isUIUpdatedByCurrentLocation = false
+    private val locationRange: Float = 50f
 
     //openWeather API weather map layers vars and sets
     private var overLayersOn = false
     private lateinit var precipitationOverlay: TileOverlay
     private lateinit var windOverlay: TileOverlay
     private lateinit var cloudsOverlay: TileOverlay
-//    private lateinit var tempOverlay: TileOverlay
+    //private lateinit var tempOverlay: TileOverlay
 
     private var fullscreen = false
 
@@ -137,6 +134,16 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
                 updateCurrentWeather(it)
                 overLayersOn = false
                 binding.buttonGetLocalWeatherCurrent.isClickable = true
+                if (it.alerts.isNullOrEmpty()){
+                    println("No Alerts")
+                } else {
+                    println(it.alerts[0].event)
+                    println(it.alerts[0].tags)
+                    println(it.alerts[0].description)
+                    println(getLocalDateFromTimeStamp(it.alerts[0].start, it.timezoneOffset))
+                    println(getLocalDateFromTimeStamp(it.alerts[0].end, it.timezoneOffset))
+                    println(it.alerts[0].senderName)
+                }
             }
         }
     }
@@ -162,6 +169,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     }
 
     private fun getWeatherWithUserInput(): Boolean {
+
         binding.buttonGetLocalWeatherCurrent.isClickable = false
         binding.progressBar.visibility = View.VISIBLE
         val input = binding.editTextCityInputCurrent.text.toString().lowercase()
@@ -306,7 +314,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     private fun createLocationsRequests() =
         LocationRequest.create().apply {
             interval = 60 //once in a minute
-            fastestInterval = 60
+            fastestInterval = 0
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
@@ -339,16 +347,16 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
             latLocal,
             lonLocal, location.latitude, location.longitude, result
         )
-        latLocal = location.latitude
-        lonLocal = location.longitude
         val currentTimeStamp = System.currentTimeMillis()
         if (result[0] > locationRange || (currentTimeStamp - lastSavedTimestamp) > timeRange) {
             commonViewModel.getWeatherByLatLon(
-                latLocal.toString(),
-                lonLocal.toString(),
+                location.latitude.toString(),
+                location.longitude.toString(),
                 requireContext()
             )
             lastSavedTimestamp = currentTimeStamp
+            latLocal = location.latitude
+            lonLocal = location.longitude
         }
     }
 
@@ -428,7 +436,13 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         val visibility = "Visibility: ${it.current.visibility / 1000f} km"
         binding.textViewVisibilityCurrentValue.text = visibility
 
-        val wind = "${it.current.windSpeed} m/s"
+
+
+        val windDegree = it.daily[0].windDeg
+        println("Wind Degree: $windDegree")
+        binding.currentWindArrow.animate().rotation(windDegree.toFloat())
+
+        val wind = windFormatter(it.current.windSpeed)
         binding.textViewWindCurrentValue.text = wind
 
         val pressure = "${it.current.pressure} hPa"

@@ -11,7 +11,7 @@ interface OneCallWeatherService {
     @GET("onecall")
     suspend fun getWeatherDataByLatLon(
         @Query("lat") lat: String, @Query("lon") lon: String,
-        @Query("exclude") exclude: String = "minutely,alerts",
+        @Query("exclude") exclude: String = "minutely",
         @Query("appid") appid: String = apiKey,
         @Query("units") units: String = "metric"
     ): OneCallWeatherResult

@@ -450,6 +450,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imageView_uv_icon_current" />
 
+        <ImageView
+                android:src="@drawable/ic_up_arrow"
+                android:layout_width="11dp"
+                android:layout_height="11dp"
+                android:id="@+id/current_wind_arrow"
+                app:layout_constraintStart_toEndOf="@+id/textView_wind_current_value"
+                app:layout_constraintBottom_toBottomOf="@+id/textView_wind_current_value"
+                app:layout_constraintTop_toTopOf="@+id/textView_wind_current_value"
+                android:layout_marginStart="4dp"
+                app:tint="#757575" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar

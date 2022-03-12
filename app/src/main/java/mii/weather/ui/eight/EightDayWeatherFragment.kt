@@ -1,6 +1,5 @@
 package mii.weather.ui.eight
 
-import android.graphics.Color.rgb
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.Gravity

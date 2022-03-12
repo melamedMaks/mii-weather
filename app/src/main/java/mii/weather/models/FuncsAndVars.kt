@@ -18,6 +18,10 @@ import kotlin.math.roundToInt
 
 var onLineUiUpdated = false
 var noNetworkConnection = true
+var timeRange: Long = 3600 * 1000
+var lastSavedTimestamp: Long = 0
+var latLocal: Double = 0.0
+var lonLocal: Double = 0.0
 
 @StringRes
 val TAB_TITLES = arrayOf(
@@ -260,8 +264,14 @@ fun aqiCalculation(components: Components): Int {
         in 51..75 -> 3
         in 76..100 -> 4
         in 101..150 -> 5
-        else -> {6}
+        else -> {
+            6
+        }
     }
     return aqi
+}
+
+fun windFormatter(wind: Double): String{
+    return "${String.format("%.1f", wind)} m/s"
 }
 
