@@ -22,6 +22,7 @@ var timeRange: Long = 3600 * 1000
 var lastSavedTimestamp: Long = 0
 var latLocal: Double = 0.0
 var lonLocal: Double = 0.0
+var inProgress = false
 
 @StringRes
 val TAB_TITLES = arrayOf(
@@ -195,7 +196,7 @@ fun aqiCalculation(components: Components): Int {
         200 < components.noTwo && components.noTwo <= 400 -> {
             Pair(Pair(76, 100), Pair(201, 400))
         }
-        else -> Pair(Pair(101, 125), Pair(401, components.noTwo.toInt()))
+        else -> Pair(Pair(101, 125), Pair(401, 800))
     }
 
     val pmTen: Pair<Pair<Int, Int>, Pair<Int, Int>> = when {
@@ -211,7 +212,7 @@ fun aqiCalculation(components: Components): Int {
         90 < components.pmTen && components.pmTen <= 180 -> {
             Pair(Pair(76, 100), Pair(91, 180))
         }
-        else -> Pair(Pair(101, 125), Pair(181, components.pmTen.toInt()))
+        else -> Pair(Pair(101, 125), Pair(181, 360))
     }
 
     val oThree: Pair<Pair<Int, Int>, Pair<Int, Int>> = when {
@@ -227,7 +228,7 @@ fun aqiCalculation(components: Components): Int {
         180 < components.oThree && components.oThree <= 240 -> {
             Pair(Pair(76, 100), Pair(181, 240))
         }
-        else -> Pair(Pair(101, 125), Pair(241, components.oThree.toInt()))
+        else -> Pair(Pair(101, 125), Pair(241, 300))
     }
 
     val pmTwoFive: Pair<Pair<Int, Int>, Pair<Int, Int>> = when {
@@ -243,17 +244,17 @@ fun aqiCalculation(components: Components): Int {
         55 < components.pmTwoFive && components.pmTwoFive <= 110 -> {
             Pair(Pair(76, 100), Pair(56, 110))
         }
-        else -> Pair(Pair(101, 125), Pair(111, components.pmTwoFive.toInt()))
+        else -> Pair(Pair(101, 125), Pair(111, 220))
     }
 
     val noTwoIndex =
-        (((noTwo.first.second - noTwo.first.first) / (noTwo.second.second - noTwo.second.first) * (components.noTwo - noTwo.second.first)) + noTwo.first.first).toInt()
+        ((((noTwo.first.second - noTwo.first.first) / (noTwo.second.second - noTwo.second.first)) * (components.noTwo - noTwo.second.first)) + noTwo.first.first).toInt()
     val pmTenIndex =
-        (((pmTen.first.second - pmTen.first.first) / (pmTen.second.second - pmTen.second.first) * (components.pmTen - pmTen.second.first)) + pmTen.first.first).toInt()
+        ((((pmTen.first.second - pmTen.first.first) / (pmTen.second.second - pmTen.second.first)) * (components.pmTen - pmTen.second.first)) + pmTen.first.first).toInt()
     val oThreeIndex =
-        (((oThree.first.second - oThree.first.first) / (oThree.second.second - oThree.second.first) * (components.oThree - oThree.second.first)) + oThree.first.first).toInt()
+        ((((oThree.first.second - oThree.first.first) / (oThree.second.second - oThree.second.first)) * (components.oThree - oThree.second.first)) + oThree.first.first).toInt()
     val pmTwoFiveIndex =
-        (((pmTwoFive.first.second - pmTwoFive.first.first) / (pmTwoFive.second.second - pmTwoFive.second.first) * (components.pmTwoFive - pmTwoFive.second.first)) + pmTwoFive.first.first).toInt()
+        ((((pmTwoFive.first.second - pmTwoFive.first.first) / (pmTwoFive.second.second - pmTwoFive.second.first)) * (components.pmTwoFive - pmTwoFive.second.first)) + pmTwoFive.first.first).toInt()
 
 
     val indexArray = arrayOf(noTwoIndex, pmTenIndex, oThreeIndex, pmTwoFiveIndex)

@@ -33,9 +33,6 @@ class EightDayAdapter(private val oneCallWeatherResult: OneCallWeatherResult) :
 
             holder.binding.textViewTempEightValue.text = tempToIntAndString(temp.day)
 
-//            val tempDayFeels = "Feels like: ${tempToIntAndString(feelsLike.day)}"
-//            holder.binding.textViewDayTempFeelsEightValue.text = tempDayFeels
-
             holder.binding.textViewMinTempEight.text = tempToIntAndString(temp.min)
             holder.binding.textViewMaxTempEight.text = tempToIntAndString(temp.max)
 

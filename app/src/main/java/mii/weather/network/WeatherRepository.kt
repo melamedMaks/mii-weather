@@ -14,7 +14,6 @@ class WeatherRepository {
         var airPollutionResultUpdated: AirPollutionResult? = null
         lateinit var cityCountryCommonUse: String
 
-
         suspend fun getWeatherByLatLon(
             lat: String,
             lon: String
@@ -49,7 +48,6 @@ class WeatherRepository {
         }
 
         suspend fun getWeatherByQuery(q: String): WeatherResult {
-
             return withContext(Dispatchers.IO) {
                 val weatherResult = CurrentWeatherService.create().getWeatherDataByCityName(q)
                 cityCountryCommonUse = "${weatherResult.city.name}, ${weatherResult.city.country}"
@@ -68,7 +66,11 @@ class WeatherRepository {
                     println(getCurrentUnix())
                     db.weatherDAO().deleteById(weatherData.id)
                 }
-                if ((id[0] == cityName || (id.size > 1 && id[1] == cityName)) && unixDiff(weatherData.date, getCurrentUnix())) {
+                if ((id[0] == cityName || (id.size > 1 && id[1] == cityName)) && unixDiff(
+                        weatherData.date,
+                        getCurrentUnix()
+                    )
+                ) {
                     weatherResultUpdated =
                         fromJsonCurrent(weatherData.weatherResultJson)!!
                     cityCountryCommonUse =
@@ -93,7 +95,8 @@ class WeatherRepository {
                     "${weatherResultUpdated.city.name}, ${weatherResultUpdated.city.country}"
                 oneCallWeatherResultUpdated =
                     fromJsonOneCall(weatherResult[index].oneCallWeatherResultJson)
-                airPollutionResultUpdated = fromJsonAirPollution(weatherResult[index].airPollutionResultJson)
+                airPollutionResultUpdated =
+                    fromJsonAirPollution(weatherResult[index].airPollutionResultJson)
                 return true
             }
             return false
@@ -109,14 +112,13 @@ class WeatherRepository {
             } else {
                 "${cityName.lowercase()}@$query"
             }
-
             val weatherData = WeatherData(
                 id = id, toJsonCurrentWeather(weatherResultUpdated),
                 toJsonOneCallWeather(oneCallWeatherResultUpdated), toJsonAirPollution(
-                    airPollutionResultUpdated), date
+                    airPollutionResultUpdated
+                ), date
             )
-
-           db.weatherDAO().addWeather(weatherData)
+            db.weatherDAO().addWeather(weatherData)
         }
     }
 }

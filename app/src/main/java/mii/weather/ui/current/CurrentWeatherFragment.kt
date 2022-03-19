@@ -15,6 +15,7 @@ import android.os.Looper
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -34,17 +35,25 @@ import kotlinx.coroutines.launch
 import mii.weather.R
 import mii.weather.databinding.CurrentWeatherFragmentBinding
 import mii.weather.models.*
+import mii.weather.network.WeatherRepository.Companion.airPollutionResultUpdated
+import mii.weather.network.WeatherRepository.Companion.weatherResultUpdated
 import mii.weather.ui.ActivityBackPressedCallback
 import mii.weather.ui.CommonViewModel
+import mii.weather.ui.alerts.AlertsFragment
 
-class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
+class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
+    AlertsFragment.ClickListener {
 
     private var _binding: CurrentWeatherFragmentBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var commonViewModel: CommonViewModel
+
+    //    private lateinit var alertFragment: AlertsFragment
     private val transitionTop: Transition = Slide(Gravity.TOP)
     private val transitionBottom: Transition = Slide(Gravity.BOTTOM)
+    private val transitionLeft: Transition = Slide(Gravity.LEFT)
+    private val transitionRight: Transition = Slide(Gravity.RIGHT)
 
     //location vars and sets
     private var isLocationPermissionAsked: Boolean = false
@@ -57,7 +66,6 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     private lateinit var lon: String
     private var isUIUpdatedByCurrentLocation = false
 
-
     //google maps SDK vars and sets
     private lateinit var map: GoogleMap
     private val mapCallback = onMapReadyCallback()
@@ -66,7 +74,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
 
     //settings for onLocationChangelistener logic
 
-    private val locationRange: Float = 50f
+    private val locationRange: Float = 2000f //smallest displacement in meters
 
     //openWeather API weather map layers vars and sets
     private var overLayersOn = false
@@ -76,7 +84,6 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     //private lateinit var tempOverlay: TileOverlay
 
     private var fullscreen = false
-
     private var isUiCurrentRendered = false
 
     override fun onCreateView(
@@ -87,6 +94,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         _binding = CurrentWeatherFragmentBinding.inflate(inflater, container, false)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(mapCallback)
+
         return binding.root
     }
 
@@ -109,63 +117,49 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         localWeatherButtonListener()
         onLayoutChangeListener(view)
         onFullScreenButtonListener()
-        TransitionManager.beginDelayedTransition(binding.root, transitionTop)
-        TransitionManager.beginDelayedTransition(binding.root, transitionBottom)
     }
 
     private fun initObservers() {
-        weatherObserver()
         oneCallWeatherObserver()
-        airPollutionObserver()
         onErrorObserver()
-    }
-
-    private fun airPollutionObserver() {
-        commonViewModel.airPollutionResult.observe(viewLifecycleOwner) {
-            lifecycleScope.launch {
-                updateAirPollution(it)
-            }
-        }
     }
 
     private fun oneCallWeatherObserver() {
         commonViewModel.oneCallWeatherResult.observe(viewLifecycleOwner) {
+            if (childFragmentManager.findFragmentByTag("AlertFragment") != null){
+                onClickAlertsFragment()
+            }
             lifecycleScope.launch {
+                binding.progressBar.visibility = View.INVISIBLE
                 updateCurrentWeather(it)
+                updateCurrentData(weatherResultUpdated)
+                airPollutionResultUpdated?.let { it1 -> updateAirPollution(it1) }
                 overLayersOn = false
                 binding.buttonGetLocalWeatherCurrent.isClickable = true
-                if (it.alerts.isNullOrEmpty()){
-                    println("No Alerts")
-                } else {
-                    println(it.alerts[0].event)
-                    println(it.alerts[0].tags)
-                    println(it.alerts[0].description)
-                    println(getLocalDateFromTimeStamp(it.alerts[0].start, it.timezoneOffset))
-                    println(getLocalDateFromTimeStamp(it.alerts[0].end, it.timezoneOffset))
-                    println(it.alerts[0].senderName)
-                }
-            }
-        }
-    }
-
-    private fun weatherObserver() {
-        commonViewModel.weatherResult.observe(viewLifecycleOwner) {
-            lifecycleScope.launch {
-                updateCurrentData(it)
                 resetOverLayers()
-                if (binding.coverCurrent.isVisible) {
-                    isUiCurrentRendered = true
+                isUiCurrentRendered = true
+                inProgress = false
+
+
+                if (it.alerts.isNullOrEmpty()) {
+                    hideAlertVisibility()
+                } else {
+                    binding.textViewAlerts.apply {
+                        showAlertView(it.alerts)
+                        setOnAlertClickListener()
+                    }
                 }
-                binding.progressBar.visibility = View.GONE
             }
         }
     }
 
     private fun onErrorObserver() {
         commonViewModel.errorHandler.observe(viewLifecycleOwner) {
-            binding.progressBar.visibility = View.GONE
+            inProgress = false
+            binding.progressBar.visibility = View.INVISIBLE
             binding.buttonGetLocalWeatherCurrent.isClickable = true
         }
+
     }
 
     private fun getWeatherWithUserInput(): Boolean {
@@ -173,14 +167,15 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         binding.buttonGetLocalWeatherCurrent.isClickable = false
         binding.progressBar.visibility = View.VISIBLE
         val input = binding.editTextCityInputCurrent.text.toString().lowercase()
-        if (input != "") {
+        if (input != "" && !inProgress) {
+            inProgress = true
             isUIUpdatedByCurrentLocation = false
             commonViewModel.getWeatherByQuery(input, requireContext())
             binding.editTextCityInputCurrent.text.clear()
             hideKeyboard(view)
             return false
         }
-        binding.progressBar.visibility = View.GONE
+        binding.progressBar.visibility = View.INVISIBLE
         return true
     }
 
@@ -256,6 +251,15 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         }
     }
 
+    private fun TextView.setOnAlertClickListener() {
+        this.setOnClickListener {
+            binding.textViewAlerts.isClickable = false
+            binding.imageViewFullscreenButton.isClickable = false
+            binding.imageViewIconCurrent.isClickable = false
+            showAlertFragment()
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun onInternetConnectionListener(context: Context) {
         val connectivityManager =
@@ -301,7 +305,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
             )
         } else {
             commonViewModel.getWeatherLastSavedInDB(requireContext())
-            binding.progressBar.visibility = View.GONE
+            binding.progressBar.visibility = View.INVISIBLE
         }
     }
 
@@ -313,7 +317,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
 
     private fun createLocationsRequests() =
         LocationRequest.create().apply {
-            interval = 60 //once in a minute
+            interval = 120 //once in 2 minutes
             fastestInterval = 0
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
@@ -328,14 +332,14 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
     private fun locationCallback() = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             if (noNetworkConnection) {
-                binding.progressBar.visibility = View.GONE
+                binding.progressBar.visibility = View.INVISIBLE
             }
             for (location in locationResult.locations) {
-                onLocationChangeListener(location)
                 lat = location.latitude.toString()
                 lon = location.longitude.toString()
-                isUIUpdatedByCurrentLocation = true
             }
+            val location: Location = locationResult.locations[locationResult.locations.size - 1]
+            onLocationChangeListener(location)
         }
     }
 
@@ -349,11 +353,15 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         )
         val currentTimeStamp = System.currentTimeMillis()
         if (result[0] > locationRange || (currentTimeStamp - lastSavedTimestamp) > timeRange) {
-            commonViewModel.getWeatherByLatLon(
-                location.latitude.toString(),
-                location.longitude.toString(),
-                requireContext()
-            )
+            if (!inProgress) {
+                inProgress = true
+                commonViewModel.getWeatherByLatLon(
+                    location.latitude.toString(),
+                    location.longitude.toString(),
+                    requireContext()
+                )
+            }
+            isUIUpdatedByCurrentLocation = true
             lastSavedTimestamp = currentTimeStamp
             latLocal = location.latitude
             lonLocal = location.longitude
@@ -437,10 +445,10 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         binding.textViewVisibilityCurrentValue.text = visibility
 
 
-
         val windDegree = it.daily[0].windDeg
         println("Wind Degree: $windDegree")
-        binding.currentWindArrow.animate().rotation(windDegree.toFloat())
+        binding.currentWindArrow.animate().rotation(windDegree.toFloat()).alpha(1.0f).duration =
+            800
 
         val wind = windFormatter(it.current.windSpeed)
         binding.textViewWindCurrentValue.text = wind
@@ -517,6 +525,28 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
         }
     }
 
+    private fun hideAlertVisibility() {
+        binding.textViewAlerts.visibility = View.GONE
+        println("No Alerts")
+        binding.imageViewPointerAlert.visibility = View.INVISIBLE
+    }
+
+    private fun TextView.showAlertView(alerts: List<Alerts>) {
+        binding.imageViewPointerAlert.visibility = View.VISIBLE
+        this.visibility = View.VISIBLE
+        val text = "! ${alerts[0].event}"
+        this.text = text
+    }
+
+    private fun showAlertFragment() {
+        val alertFragment = AlertsFragment()
+        alertFragment.setCallback(this)
+        TransitionManager.beginDelayedTransition(binding.root, transitionRight)
+        childFragmentManager.beginTransaction()
+            .add(R.id.alert_fragment_container, alertFragment, "AlertFragment")
+            .commit()
+    }
+
     //weather map overlays
     private fun setOverLayers() {
         cloudsOverlay = map.addTileOverlay(
@@ -569,6 +599,15 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback {
             return true
         }
         return false
+    }
+
+    override fun onClickAlertsFragment() {
+        TransitionManager.beginDelayedTransition(binding.root, transitionLeft)
+        childFragmentManager.findFragmentByTag("AlertFragment")
+            ?.let { childFragmentManager.beginTransaction().remove(it).commit() }
+        binding.textViewAlerts.isClickable = true
+        binding.imageViewFullscreenButton.isClickable = true
+        binding.imageViewIconCurrent.isClickable = true
     }
 
     override fun onPause() {

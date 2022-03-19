@@ -3,24 +3,24 @@ package mii.weather.ui
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.TileProvider
 import com.google.android.gms.maps.model.UrlTileProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import mii.weather.apiKey1
 import mii.weather.apiKey2
+import mii.weather.models.*
 import mii.weather.network.WeatherRepository
+import mii.weather.network.WeatherRepository.Companion.airPollutionResultUpdated
 import mii.weather.network.WeatherRepository.Companion.oneCallWeatherResultUpdated
 import mii.weather.network.WeatherRepository.Companion.weatherResultUpdated
-import mii.weather.models.*
-import mii.weather.network.WeatherRepository.Companion.airPollutionResultUpdated
 import java.net.URL
 
 class CommonViewModel(application: Application) : AndroidViewModel(application) {
-
-    private var _weatherResult = MutableLiveData<WeatherResult>()
-    val weatherResult: LiveData<WeatherResult> get() = _weatherResult
 
     private var _oneCallWeatherResult = MutableLiveData<OneCallWeatherResult>()
     val oneCallWeatherResult: LiveData<OneCallWeatherResult> get() = _oneCallWeatherResult
@@ -37,46 +37,44 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun getWeatherByQuery(query: String, context: Context) {
-        _weatherResult.apply {
-            viewModelScope.launch(handler) {
-                if (WeatherRepository.getFromDataBase(context, query)) {
-                    value = weatherResultUpdated
-                    getEightWeatherData()
-                    getairPollutionData()
-                    WeatherRepository.dataBaseUpdate(context, query)
-                } else {
-                    val weatherResult = WeatherRepository.getWeatherByQuery(query)
-                    weatherResultUpdated = weatherResult
-                    value = weatherResult
-                    val lat = weatherResult.city.coord.lat.toString()
-                    val lon = weatherResult.city.coord.lon.toString()
-                    getOneCallWeatherByLatLon(lat, lon, query, context)
-                    getAirPollutionByLatLon(lat, lon, query, context)
-                    onLineUiUpdated = true
-                }
-            }
-        }
-    }
-
-
-    fun getWeatherByLatLon(lat: String, lon: String, context: Context) {
-        _weatherResult.apply {
-            viewModelScope.launch(handler) {
-                val weatherResult = WeatherRepository.getWeatherByLatLon(lat, lon)
+        viewModelScope.launch(handler) {
+            if (WeatherRepository.getFromDataBase(context, query)) {
+                getEightWeatherData()
+                getairPollutionData()
+                WeatherRepository.dataBaseUpdate(context, query)
+            } else {
+                val weatherResult = WeatherRepository.getWeatherByQuery(query)
                 weatherResultUpdated = weatherResult
-                value = weatherResult
-                getAirPollutionByLatLon(lat, lon, "", context)
-                getOneCallWeatherByLatLon(lat, lon,"", context)
+                val lat = weatherResult.city.coord.lat.toString()
+                val lon = weatherResult.city.coord.lon.toString()
+                getOneCallWeatherByLatLon(lat, lon, query, context)
+                getAirPollutionByLatLon(lat, lon, query, context)
                 onLineUiUpdated = true
             }
         }
     }
 
-    private fun getOneCallWeatherByLatLon(lat: String, lon: String, query: String, context: Context) {
+    fun getWeatherByLatLon(lat: String, lon: String, context: Context) {
+        viewModelScope.launch(handler) {
+            val weatherResult = WeatherRepository.getWeatherByLatLon(lat, lon)
+            weatherResultUpdated = weatherResult
+            getAirPollutionByLatLon(lat, lon, "", context)
+            getOneCallWeatherByLatLon(lat, lon, "", context)
+            onLineUiUpdated = true
+        }
+    }
+
+    private fun getOneCallWeatherByLatLon(
+        lat: String,
+        lon: String,
+        query: String,
+        context: Context
+    ) {
         if (lat.isNotEmpty()) {
             _oneCallWeatherResult.apply {
                 viewModelScope.launch(handler) {
-                    val oneCallWeatherResult = WeatherRepository.getOneCallWeatherByLatLon(lat, lon)
+                    val oneCallWeatherResult =
+                        WeatherRepository.getOneCallWeatherByLatLon(lat, lon)
                     oneCallWeatherResultUpdated = oneCallWeatherResult
                     WeatherRepository.dataBaseUpdate(context, query)
                     value = oneCallWeatherResult
@@ -97,25 +95,14 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun getWeatherLastSavedInDB(context: Context) {
-        _weatherResult.apply {
-            viewModelScope.launch(handler) {
-                if (WeatherRepository.getLatestFromDataBase(context)) {
-                    onLineUiUpdated = false
-                    value = weatherResultUpdated
-                    getEightWeatherData()
-                    getairPollutionData()
-                }
+        viewModelScope.launch(handler) {
+            if (WeatherRepository.getLatestFromDataBase(context)) {
+                onLineUiUpdated = false
+                getEightWeatherData()
+                getairPollutionData()
             }
         }
     }
-
-//    fun getCurrentWeatherData() {
-//        _weatherResult.apply {
-//            viewModelScope.launch(handler) {
-//                value = weatherResultUpdated
-//            }
-//        }
-//    }
 
     fun getEightWeatherData() {
         if (oneCallWeatherResultUpdated != null) {
@@ -146,7 +133,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 return URL(url)
             } catch (e: Exception) {
-                Log.e("Exception",e.message.toString())
+                Log.e("Exception", e.message.toString())
             }
             return null
         }
@@ -161,7 +148,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 return URL(url)
             } catch (e: Exception) {
-                Log.e("Exception",e.message.toString())
+                Log.e("Exception", e.message.toString())
             }
             return null
         }
@@ -176,14 +163,13 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 return URL(url)
             } catch (e: Exception) {
-                Log.e("Exception",e.message.toString())
+                Log.e("Exception", e.message.toString())
             }
             return null
         }
     }
     var tileProviderTemp: TileProvider = object : UrlTileProvider(256, 256) {
         override fun getTileUrl(x: Int, y: Int, zoom: Int): URL? {
-
             val url: String = String.format(
                 "$tempTileUrl$apiKey2",
                 zoom, x, y
@@ -192,7 +178,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 return URL(url)
             } catch (e: Exception) {
-                Log.e("Exception",e.message.toString())
+                Log.e("Exception", e.message.toString())
             }
             return null
         }
