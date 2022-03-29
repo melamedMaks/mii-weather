@@ -7,7 +7,7 @@ If user gives location permission, the app instantly tracks a device location an
 The app also shows weather map layers that available by click on the weather icon.<br>
 All data in the app is fetched from <a href="https://www.openweathermap.org/api">OpenWeathermap</a> API.<br><br>
 The app is written in <b>Kotlin</b> from scratch and implements the following:<br><br>
-1. App architecture - <b>MVVM</b><br>
+1. App design pattern - <b>MVVM</b><br>
 2. <b>ViewPager</b> for displaying three fragments. Two of them - hourly and 8 days fragment - render UI using their own <b>recycler views</b>.<br> 
 3. HTTP calls - <b>Retrofit2</b>.<br> 
 4. <b>Room database</b> for data handling while using the app.<br>
