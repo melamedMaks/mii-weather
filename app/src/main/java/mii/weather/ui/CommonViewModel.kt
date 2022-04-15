@@ -11,13 +11,12 @@ import com.google.android.gms.maps.model.TileProvider
 import com.google.android.gms.maps.model.UrlTileProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import mii.weather.apiKey1
-import mii.weather.apiKey2
 import mii.weather.models.*
-import mii.weather.network.WeatherRepository
-import mii.weather.network.WeatherRepository.Companion.airPollutionResultUpdated
-import mii.weather.network.WeatherRepository.Companion.oneCallWeatherResultUpdated
-import mii.weather.network.WeatherRepository.Companion.weatherResultUpdated
+import mii.weather.repository.WeatherRepository
+import mii.weather.repository.WeatherRepository.Companion.airPollutionResultUpdated
+import mii.weather.repository.WeatherRepository.Companion.oneCallWeatherResultUpdated
+import mii.weather.repository.WeatherRepository.Companion.weatherResultUpdated
+import mii.weather.utils.*
 import java.net.URL
 
 class CommonViewModel(application: Application) : AndroidViewModel(application) {
@@ -39,6 +38,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
     fun getWeatherByQuery(query: String, context: Context) {
         viewModelScope.launch(handler) {
             if (WeatherRepository.getFromDataBase(context, query)) {
+                isUIUpdatedByCurrentLocation = false
                 getEightWeatherData()
                 getairPollutionData()
                 WeatherRepository.dataBaseUpdate(context, query)
@@ -50,6 +50,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
                 getOneCallWeatherByLatLon(lat, lon, query, context)
                 getAirPollutionByLatLon(lat, lon, query, context)
                 onLineUiUpdated = true
+                isUIUpdatedByCurrentLocation = false
             }
         }
     }
@@ -61,6 +62,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
             getAirPollutionByLatLon(lat, lon, "", context)
             getOneCallWeatherByLatLon(lat, lon, "", context)
             onLineUiUpdated = true
+            isUIUpdatedByCurrentLocation = true
         }
     }
 
@@ -186,7 +188,7 @@ class CommonViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun exHandler(application: Application, it: Throwable) {
         when {
-            noNetworkConnection -> {
+            !isNetworkAvailable -> {
                 errorToast(application.applicationContext, warningInternet)
             }
             it.localizedMessage?.contains("404") == true -> {

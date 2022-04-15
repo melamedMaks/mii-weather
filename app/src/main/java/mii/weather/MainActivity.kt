@@ -1,27 +1,24 @@
 package mii.weather
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import mii.weather.databinding.ActivityMainBinding
-import mii.weather.models.TAB_TITLES
 import mii.weather.ui.ActivityBackPressedCallback
 import mii.weather.ui.SectionsPagerAdapter
+import mii.weather.ui.current.HandleOnSwipe
+import mii.weather.utils.TAB_TITLES
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HandleOnSwipe {
 
     private lateinit var binding: ActivityMainBinding
-    lateinit var viewPager: ViewPager2
-    lateinit var sectionsPagerAdapter: SectionsPagerAdapter
 
+    private lateinit var viewPager: ViewPager2
+    lateinit var sectionsPagerAdapter: SectionsPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +28,12 @@ class MainActivity : AppCompatActivity() {
 
         sectionsPagerAdapter = SectionsPagerAdapter(this)
         viewPager = binding.viewPager
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(),
+            HandleOnSwipe {
+            override fun onSwipe(status: Boolean) {
+                viewPager.isUserInputEnabled = status
+            }
+        })
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         TabLayoutMediator(tabs, viewPager) { tab, position ->
@@ -54,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         if (!isBackHandled) {
             //check the index
             if (currentItem > 0)
-                //returns previous
+            //returns previous
                 viewPager.currentItem = currentItem - 1
             //else calls super
             else {
@@ -93,5 +96,9 @@ class MainActivity : AppCompatActivity() {
             applyOverrideConfiguration(newConfig)
         }
         super.attachBaseContext(newBase)
+    }
+
+    override fun onSwipe(status: Boolean) {
+        viewPager.isUserInputEnabled = status
     }
 }

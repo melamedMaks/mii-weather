@@ -1,18 +1,21 @@
 package mii.weather.ui.alerts
 
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import mii.weather.R
 import mii.weather.databinding.FragmentAlertsBinding
 import mii.weather.models.Alerts
-import mii.weather.models.getLocalDateFromTimeStamp
-import mii.weather.network.WeatherRepository
+import mii.weather.repository.WeatherRepository
 import mii.weather.ui.CommonViewModel
+import mii.weather.utils.getLocalDateFromTimeStamp
 
-class AlertsFragment: Fragment() {
+class AlertsFragment : Fragment() {
 
     private var _binding: FragmentAlertsBinding? = null
     private val binding get() = _binding!!
@@ -40,7 +43,14 @@ class AlertsFragment: Fragment() {
         }
 
         binding.buttonClose.setOnClickListener {
-            callback?.onClickAlertsFragment()
+            it.startAnimation(
+                AnimationUtils.loadAnimation(
+                    requireContext(),
+                    R.anim.onclick_animation
+                )
+            )
+            it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            callback?.onClickAlertsFragment(isVisible = false)
         }
     }
 
@@ -65,8 +75,8 @@ class AlertsFragment: Fragment() {
             binding.textViewSender.text = this.senderName
         }
     }
+}
 
-    interface ClickListener {
-        fun onClickAlertsFragment()
-    }
+interface ClickListener {
+    fun onClickAlertsFragment(isVisible: Boolean)
 }

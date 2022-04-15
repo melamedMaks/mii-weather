@@ -8,6 +8,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color.rgb
 import android.location.Location
 import android.location.Location.distanceBetween
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
@@ -18,6 +19,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -31,29 +33,35 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mii.weather.R
 import mii.weather.databinding.CurrentWeatherFragmentBinding
-import mii.weather.models.*
-import mii.weather.network.WeatherRepository.Companion.airPollutionResultUpdated
-import mii.weather.network.WeatherRepository.Companion.weatherResultUpdated
+import mii.weather.models.AirPollutionResult
+import mii.weather.models.Alerts
+import mii.weather.models.OneCallWeatherResult
+import mii.weather.models.WeatherResult
+import mii.weather.repository.WeatherRepository.Companion.airPollutionResultUpdated
+import mii.weather.repository.WeatherRepository.Companion.oneCallWeatherResultUpdated
+import mii.weather.repository.WeatherRepository.Companion.weatherResultUpdated
 import mii.weather.ui.ActivityBackPressedCallback
 import mii.weather.ui.CommonViewModel
 import mii.weather.ui.alerts.AlertsFragment
+import mii.weather.ui.alerts.ClickListener
+import mii.weather.utils.*
 
 class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
-    AlertsFragment.ClickListener {
+    ClickListener {
 
     private var _binding: CurrentWeatherFragmentBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var commonViewModel: CommonViewModel
 
-    //    private lateinit var alertFragment: AlertsFragment
+    var onSwipe: HandleOnSwipe? = null
+
     private val transitionTop: Transition = Slide(Gravity.TOP)
     private val transitionBottom: Transition = Slide(Gravity.BOTTOM)
-    private val transitionLeft: Transition = Slide(Gravity.LEFT)
-    private val transitionRight: Transition = Slide(Gravity.RIGHT)
 
     //location vars and sets
     private var isLocationPermissionAsked: Boolean = false
@@ -64,7 +72,6 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
     private val launcher = activityResultLauncher()
     private lateinit var lat: String
     private lateinit var lon: String
-    private var isUIUpdatedByCurrentLocation = false
 
     //google maps SDK vars and sets
     private lateinit var map: GoogleMap
@@ -73,8 +80,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
     private val zoomOut: Float = 0f
 
     //settings for onLocationChangelistener logic
-
-    private val locationRange: Float = 2000f //smallest displacement in meters
+    private val locationRange: Float = 2000f //smallest displacement in meters 2000f
 
     //openWeather API weather map layers vars and sets
     private var overLayersOn = false
@@ -85,6 +91,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
 
     private var fullscreen = false
     private var isUiCurrentRendered = false
+    private lateinit var alertsFragment: AlertsFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,8 +101,15 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         _binding = CurrentWeatherFragmentBinding.inflate(inflater, container, false)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(mapCallback)
-
+        alertsFragment = AlertsFragment()
         return binding.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (activity is HandleOnSwipe) {
+            onSwipe = activity as HandleOnSwipe
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -126,10 +140,27 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
 
     private fun oneCallWeatherObserver() {
         commonViewModel.oneCallWeatherResult.observe(viewLifecycleOwner) {
-            if (childFragmentManager.findFragmentByTag("AlertFragment") != null){
-                onClickAlertsFragment()
-            }
+            onClickAlertsFragment(isVisible = false)
             lifecycleScope.launch {
+                if (it.alerts.isNullOrEmpty()) {
+                    hideAlertVisibility()
+                } else {
+                    binding.textViewAlerts.apply {
+                        showAlertView(it.alerts)
+                        setOnAlertClickListener()
+                        alertVisible = false
+                        childFragmentManager.beginTransaction()
+                            .replace(R.id.alert_fragment_container, alertsFragment, "AlertFragment")
+                            .commit()
+                    }
+                }
+                if (isUIUpdatedByCurrentLocation && isLocationEnabled(requireContext())) {
+                    binding.buttonGetLocalWeatherCurrent.imageTintList =
+                        ColorStateList.valueOf(rgb(41, 121, 255))
+                } else {
+                    binding.buttonGetLocalWeatherCurrent.imageTintList =
+                        ColorStateList.valueOf(rgb(117, 117, 117))
+                }
                 binding.progressBar.visibility = View.INVISIBLE
                 updateCurrentWeather(it)
                 updateCurrentData(weatherResultUpdated)
@@ -139,16 +170,6 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
                 resetOverLayers()
                 isUiCurrentRendered = true
                 inProgress = false
-
-
-                if (it.alerts.isNullOrEmpty()) {
-                    hideAlertVisibility()
-                } else {
-                    binding.textViewAlerts.apply {
-                        showAlertView(it.alerts)
-                        setOnAlertClickListener()
-                    }
-                }
             }
         }
     }
@@ -157,19 +178,26 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         commonViewModel.errorHandler.observe(viewLifecycleOwner) {
             inProgress = false
             binding.progressBar.visibility = View.INVISIBLE
+            if (isUIUpdatedByCurrentLocation) {
+                binding.buttonGetLocalWeatherCurrent.imageTintList =
+                    ColorStateList.valueOf(rgb(41, 121, 255))
+            } else {
+                binding.buttonGetLocalWeatherCurrent.imageTintList =
+                    ColorStateList.valueOf(rgb(117, 117, 117))
+            }
             binding.buttonGetLocalWeatherCurrent.isClickable = true
         }
 
     }
 
     private fun getWeatherWithUserInput(): Boolean {
-
         binding.buttonGetLocalWeatherCurrent.isClickable = false
-        binding.progressBar.visibility = View.VISIBLE
         val input = binding.editTextCityInputCurrent.text.toString().lowercase()
         if (input != "" && !inProgress) {
+            binding.progressBar.visibility = View.VISIBLE
+            binding.buttonGetLocalWeatherCurrent.imageTintList =
+                ColorStateList.valueOf(rgb(255, 255, 255))
             inProgress = true
-            isUIUpdatedByCurrentLocation = false
             commonViewModel.getWeatherByQuery(input, requireContext())
             binding.editTextCityInputCurrent.text.clear()
             hideKeyboard(view)
@@ -184,7 +212,8 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         binding.buttonGetLocalWeatherCurrent.setOnClickListener {
             if (::lat.isInitialized) {
                 binding.progressBar.visibility = View.VISIBLE
-                isUIUpdatedByCurrentLocation = true
+                binding.buttonGetLocalWeatherCurrent.imageTintList =
+                    ColorStateList.valueOf(rgb(255, 255, 255))
                 commonViewModel.getWeatherByLatLon(lat, lon, requireContext())
                 binding.buttonGetLocalWeatherCurrent.isClickable = false
                 latLocal = lat.toDouble()
@@ -192,14 +221,22 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
             } else if (!havePermission()) {
                 launcher.launch(arrayOf(fine, coarse))
                 errorToast(requireContext(), warningCheckLocationPermission)
+            } else if (isLocationEnabled(requireContext()) && isNetworkAvailable) {
+                startLocationUpdates()
+                binding.progressBar.visibility = View.VISIBLE
+                binding.buttonGetLocalWeatherCurrent.imageTintList =
+                    ColorStateList.valueOf(rgb(255, 255, 255))
+            } else if (!isNetworkAvailable) {
+                errorToast(requireContext(), warningInternet)
+                isUIUpdatedByCurrentLocation = false
             } else {
                 errorToast(requireContext(), warningLocation)
+                isUIUpdatedByCurrentLocation = false
                 onClickAnimate(it)
                 map.uiSettings.setAllGesturesEnabled(false)
                 binding.constraintLayoutTop.isVisible = true
             }
             onClickAnimate(it)
-            map.uiSettings.setAllGesturesEnabled(false)
         }
     }
 
@@ -210,13 +247,11 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
                 binding.imageViewPointerCurrent.colorFilter = null
                 resetOverLayers()
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lon), zoomIn))
-                map.uiSettings.setAllGesturesEnabled(false)
                 false
             } else {
                 binding.imageViewPointerCurrent.setColorFilter(rgb(117, 117, 117))
                 setOverLayers()
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lon), zoomOut))
-                map.uiSettings.setAllGesturesEnabled(true)
                 true
             }
             onClickAnimate(it)
@@ -253,10 +288,11 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
 
     private fun TextView.setOnAlertClickListener() {
         this.setOnClickListener {
-            binding.textViewAlerts.isClickable = false
-            binding.imageViewFullscreenButton.isClickable = false
-            binding.imageViewIconCurrent.isClickable = false
-            showAlertFragment()
+            it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            binding.imageViewPointerAlert.imageTintList =
+                ColorStateList.valueOf(rgb(117, 117, 117))
+            alertVisible = !alertVisible
+            showAlertFragment(isVisible = true)
         }
     }
 
@@ -267,12 +303,12 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         connectivityManager.registerDefaultNetworkCallback(object :
             ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                noNetworkConnection = false
+                isNetworkAvailable = true
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-                noNetworkConnection = true
+                isNetworkAvailable = false
             }
         })
     }
@@ -289,9 +325,26 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         }
     }
 
+    private fun isLocationEnabled(context: Context): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return LocationManagerCompat.isLocationEnabled(locationManager)
+    }
+
     private fun activityResultLauncher() =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            startLocationUpdates()
+            val locationManager =
+                requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            lifecycleScope.launchWhenResumed {
+                while (true) {
+                    println("waiting... ${Thread.currentThread()}")
+                    if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        startLocationUpdates()
+                        println("Counting")
+                        return@launchWhenResumed
+                    }
+                    delay(1000)
+                }
+            }
         }
 
     //permission is checked by havePermission() below
@@ -303,6 +356,10 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
                 callback,
                 Looper.getMainLooper()
             )
+            if (!isLocationEnabled(requireContext())) {
+                errorToast(requireContext(), warningLocation)
+                isUIUpdatedByCurrentLocation = false
+            }
         } else {
             commonViewModel.getWeatherLastSavedInDB(requireContext())
             binding.progressBar.visibility = View.INVISIBLE
@@ -331,15 +388,17 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
 
     private fun locationCallback() = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            if (noNetworkConnection) {
+            if (!isNetworkAvailable) {
                 binding.progressBar.visibility = View.INVISIBLE
+            } else {
+                for (location in locationResult.locations) {
+                    lat = location.latitude.toString()
+                    lon = location.longitude.toString()
+                }
+                val currentLocation: Location =
+                    locationResult.locations[locationResult.locations.size - 1]
+                onLocationChangeListener(currentLocation)
             }
-            for (location in locationResult.locations) {
-                lat = location.latitude.toString()
-                lon = location.longitude.toString()
-            }
-            val location: Location = locationResult.locations[locationResult.locations.size - 1]
-            onLocationChangeListener(location)
         }
     }
 
@@ -354,14 +413,15 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         val currentTimeStamp = System.currentTimeMillis()
         if (result[0] > locationRange || (currentTimeStamp - lastSavedTimestamp) > timeRange) {
             if (!inProgress) {
-                inProgress = true
-                commonViewModel.getWeatherByLatLon(
-                    location.latitude.toString(),
-                    location.longitude.toString(),
-                    requireContext()
-                )
+                context?.let {
+                    inProgress = true
+                    commonViewModel.getWeatherByLatLon(
+                        location.latitude.toString(),
+                        location.longitude.toString(),
+                        it
+                    )
+                }
             }
-            isUIUpdatedByCurrentLocation = true
             lastSavedTimestamp = currentTimeStamp
             latLocal = location.latitude
             lonLocal = location.longitude
@@ -372,7 +432,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         this.map = googleMap
         map.uiSettings.isMyLocationButtonEnabled = false
         map.uiSettings.setAllGesturesEnabled(false)
-        val coord = LatLng(32.0553815, 34.7635663)
+        val coord = LatLng(latLocal, lonLocal)
         googleMap.addMarker(
             MarkerOptions()
                 .position(coord)
@@ -396,11 +456,6 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         if (havePermission()) {
             map.isMyLocationEnabled = true
         }
-    }
-
-    private fun onClickAnimate(it: View) {
-        it.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.onclick_animation))
-        requireView().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
     }
 
     private fun hideKeyboard(it: View?) {
@@ -482,6 +537,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
     //which aren't exist in oneCal API
     private fun updateCurrentData(weatherResult: WeatherResult) {
         var cityCountry = "${weatherResult.city.name}, ${weatherResult.city.country}"
+
         binding.textViewCityCountryCurrent.text = cityCountry
 
         cityCountry = "${weatherResult.city.name}, ${weatherResult.city.country} ..."
@@ -507,6 +563,13 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
     }
 
     private fun topUiRendering(visible: Boolean) {
+        binding.buttonGetLocalWeatherCurrent.isVisible = visible
+        binding.imageViewFullscreenButton.isVisible = visible
+        if (alertVisible && binding.alertFragmentContainer.rotationX != 90f) {
+            onClickAlertsFragment(alertVisible)
+        } else if (alertVisible && binding.alertFragmentContainer.rotationX != 0f) {
+            showAlertFragment(alertVisible)
+        }
         binding.map.isVisible = false
         TransitionManager.beginDelayedTransition(binding.root, transitionTop)
         if (fullscreen) {
@@ -514,10 +577,8 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         } else {
             binding.constraintLayoutTop.isVisible = visible
         }
-        binding.buttonGetLocalWeatherCurrent.isVisible = visible
         binding.imageViewIconCurrent.isVisible = visible
         binding.imageViewPointerCurrent.isVisible = visible
-        binding.imageViewFullscreenButton.isVisible = visible
         binding.map.isVisible = visible
         binding.textViewSearchText.isVisible = !visible
         if (!isUiCurrentRendered) {
@@ -538,13 +599,27 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         this.text = text
     }
 
-    private fun showAlertFragment() {
-        val alertFragment = AlertsFragment()
-        alertFragment.setCallback(this)
-        TransitionManager.beginDelayedTransition(binding.root, transitionRight)
-        childFragmentManager.beginTransaction()
-            .add(R.id.alert_fragment_container, alertFragment, "AlertFragment")
-            .commit()
+    private fun showAlertFragment(isVisible: Boolean) {
+        alertVisible = isVisible
+        alertsFragment.setCallback(this)
+        binding.textViewAlerts.isClickable = false
+        binding.imageViewFullscreenButton.isClickable = false
+        binding.imageViewIconCurrent.isClickable = false
+        binding.alertFragmentContainer.animate().rotationX(0f)
+        println("Alert visible: $alertVisible")
+    }
+
+    override fun onClickAlertsFragment(isVisible: Boolean) {
+        binding.textViewAlerts.isClickable = true
+        binding.imageViewFullscreenButton.isClickable = true
+        binding.imageViewIconCurrent.isClickable = true
+        binding.textViewAlerts.isClickable = true
+        binding.imageViewFullscreenButton.isClickable = true
+        binding.imageViewIconCurrent.isClickable = true
+        binding.imageViewPointerAlert.imageTintList =
+            ColorStateList.valueOf(rgb(206, 206, 206))
+        binding.alertFragmentContainer.animate().rotationX(90f)
+        alertVisible = isVisible
     }
 
     //weather map overlays
@@ -568,12 +643,23 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
             cloudsOverlay.remove()
             windOverlay.remove()
             precipitationOverlay.remove()
-            map.uiSettings.setAllGesturesEnabled(false)
         }
     }
 
     //UI behavior when in full screen mode
     private fun fullscreenOpen() {
+        val lat = oneCallWeatherResultUpdated?.lat
+        val lon = oneCallWeatherResultUpdated?.lon
+        lat?.let {
+            map.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(lat, lon!!),
+                    map.cameraPosition.zoom
+                )
+            )
+        }
+        onSwipe?.onSwipe(status = false)
+        map.uiSettings.setAllGesturesEnabled(true)
         binding.imageViewFullscreenButton.imageTintList =
             ColorStateList.valueOf(rgb(117, 117, 117))
         binding.constraintLayoutTop.isVisible = false
@@ -583,6 +669,18 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
     }
 
     private fun fullscreenClose() {
+        val lat = oneCallWeatherResultUpdated?.lat
+        val lon = oneCallWeatherResultUpdated?.lon
+        lat?.let {
+            map.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(lat, lon!!),
+                    map.cameraPosition.zoom
+                )
+            )
+        }
+        onSwipe?.onSwipe(status = true)
+        map.uiSettings.setAllGesturesEnabled(false)
         binding.imageViewFullscreenButton.imageTintList =
             ColorStateList.valueOf(rgb(206, 206, 206))
         TransitionManager.beginDelayedTransition(binding.root, transitionTop)
@@ -601,17 +699,17 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         return false
     }
 
-    override fun onClickAlertsFragment() {
-        TransitionManager.beginDelayedTransition(binding.root, transitionLeft)
-        childFragmentManager.findFragmentByTag("AlertFragment")
-            ?.let { childFragmentManager.beginTransaction().remove(it).commit() }
-        binding.textViewAlerts.isClickable = true
-        binding.imageViewFullscreenButton.isClickable = true
-        binding.imageViewIconCurrent.isClickable = true
+    private fun onClickAnimate(it: View) {
+        it.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.onclick_animation))
+        it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
     }
 
     override fun onPause() {
         super.onPause()
         binding.editTextCityInputCurrent.clearFocus()
     }
+}
+
+interface HandleOnSwipe {
+    fun onSwipe(status: Boolean)
 }

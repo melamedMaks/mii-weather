@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import mii.weather.databinding.LayoutLaterItemBinding
 import mii.weather.models.*
-import mii.weather.network.WeatherRepository
+import mii.weather.repository.WeatherRepository
+import mii.weather.utils.*
 
 class LaterTodayAdapter(private val laterWeatherResult: OneCallWeatherResult, private val airPollutionResult: AirPollutionResult) :
     RecyclerView.Adapter<LaterTodayAdapter.VH>() {

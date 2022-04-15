@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import mii.weather.databinding.LayoutEightItemBinding
 import mii.weather.models.*
-import mii.weather.network.WeatherRepository
+import mii.weather.repository.WeatherRepository
+import mii.weather.utils.*
 
 class EightDayAdapter(private val oneCallWeatherResult: OneCallWeatherResult) :
     RecyclerView.Adapter<EightDayAdapter.VH>() {

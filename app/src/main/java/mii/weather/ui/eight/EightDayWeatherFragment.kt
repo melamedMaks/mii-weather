@@ -25,7 +25,7 @@ class EightDayWeatherFragment : Fragment() {
     private var _binding: EightDayWeatherFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val transition: Transition = Slide(Gravity.TOP)
+    private val transitionTop: Transition = Slide(Gravity.TOP)
 
     private lateinit var commonViewModel: CommonViewModel
 
@@ -48,7 +48,7 @@ class EightDayWeatherFragment : Fragment() {
             lifecycleScope.launch {
                 updateEightDayRecycler(it)
                 if (binding.coverScreenEight.isVisible) {
-                    TransitionManager.beginDelayedTransition(binding.root, transition)
+                    TransitionManager.beginDelayedTransition(binding.root, transitionTop)
                     binding.coverScreenEight.isVisible = false
                 }
             }

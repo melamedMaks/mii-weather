@@ -1,10 +1,14 @@
-package mii.weather.models
+package mii.weather.utils
 
 
 import android.content.Context
 import android.graphics.Color
 import android.icu.text.SimpleDateFormat
 import android.icu.util.TimeZone
+import android.location.Location
+import android.view.HapticFeedbackConstants
+import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -13,16 +17,22 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.squareup.picasso.Picasso
 import mii.weather.R
+import mii.weather.models.AirPollutionResult
+import mii.weather.models.Components
+import mii.weather.models.OneCallWeatherResult
+import mii.weather.models.WeatherResult
 import java.util.*
 import kotlin.math.roundToInt
 
 var onLineUiUpdated = false
-var noNetworkConnection = true
+var isNetworkAvailable = false
 var timeRange: Long = 3600 * 1000
 var lastSavedTimestamp: Long = 0
 var latLocal: Double = 0.0
 var lonLocal: Double = 0.0
 var inProgress = false
+var isUIUpdatedByCurrentLocation = false
+var alertVisible = false
 
 @StringRes
 val TAB_TITLES = arrayOf(

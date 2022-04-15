@@ -1,4 +1,4 @@
-package mii.weather.network
+package mii.weather.repository
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -6,6 +6,10 @@ import kotlinx.coroutines.withContext
 import mii.weather.database.WeatherDataBase
 import mii.weather.entities.WeatherData
 import mii.weather.models.*
+import mii.weather.network.AirPollutionService
+import mii.weather.network.CurrentWeatherService
+import mii.weather.network.OneCallWeatherService
+import mii.weather.utils.*
 
 class WeatherRepository {
     companion object {

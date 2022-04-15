@@ -1,6 +1,6 @@
 package mii.weather.network
 
-import mii.weather.apiKey2
+import mii.weather.utils.apiKey2
 import mii.weather.models.AirPollutionResult
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

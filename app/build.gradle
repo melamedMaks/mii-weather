@@ -14,7 +14,7 @@ android {
         applicationId "mii.weather"
         minSdk 25
         targetSdk 31
-        versionCode 13 // 13
+        versionCode 20 // 20
         versionName "Twilight"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -43,10 +43,10 @@ dependencies {
     def lifecycle_version = "2.4.1"
     def retrofit_version = "2.9.0"
     def room_version = "2.4.2"
-    def nav_version = "2.4.1"
+    def nav_version = "2.4.2"
 
     //for tab layout in viewPager2
-    implementation("com.google.android.material:material:1.6.0-alpha03")
+    implementation("com.google.android.material:material:1.6.0-beta01")
 
     //nav component
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -70,7 +70,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:$room_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-native-mt'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
@@ -90,9 +90,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
     //firebase
-    implementation platform('com.google.firebase:firebase-bom:29.0.3')
-    implementation 'com.google.firebase:firebase-analytics-ktx:20.1.1'
-    implementation 'com.google.firebase:firebase-auth-ktx:21.0.2'
+    implementation platform('com.google.firebase:firebase-bom:29.3.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx:20.1.2'
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.3'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
     implementation 'com.google.firebase:firebase-storage-ktx:20.0.1'
 

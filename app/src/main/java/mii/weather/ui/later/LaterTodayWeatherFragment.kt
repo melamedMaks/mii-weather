@@ -20,8 +20,8 @@ import mii.weather.databinding.LaterTodayWeatherFragmentBinding
 import mii.weather.models.AirPollutionResult
 import mii.weather.ui.CommonViewModel
 import mii.weather.models.OneCallWeatherResult
-import mii.weather.network.WeatherRepository.Companion.airPollutionResultUpdated
-import mii.weather.network.WeatherRepository.Companion.oneCallWeatherResultUpdated
+import mii.weather.repository.WeatherRepository.Companion.airPollutionResultUpdated
+import mii.weather.repository.WeatherRepository.Companion.oneCallWeatherResultUpdated
 
 class LaterTodayWeatherFragment : Fragment() {
 
