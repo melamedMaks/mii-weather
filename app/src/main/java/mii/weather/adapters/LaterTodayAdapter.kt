@@ -47,6 +47,12 @@ class LaterTodayAdapter(private val laterWeatherResult: OneCallWeatherResult, pr
 
             setIconFromUrl(weather[0].icon, holder.binding.imageViewIconLater) //help fun
 
+            if (isFahrenheit) {
+                holder.binding.textViewTempUnitLater.text = "F"
+            } else {
+                holder.binding.textViewTempUnitLater.text = "C"
+            }
+
             holder.binding.textViewTempLaterText.text = tempToIntAndString(temp)
 
             holder.binding.textViewDescriptionLaterText.text = firstCharUp(weather[0].description)

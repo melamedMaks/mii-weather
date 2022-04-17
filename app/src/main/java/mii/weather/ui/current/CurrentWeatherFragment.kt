@@ -3,6 +3,7 @@ package mii.weather.ui.current
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color.rgb
@@ -58,17 +59,18 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
 
     private lateinit var commonViewModel: CommonViewModel
 
-    var onSwipe: HandleOnSwipe? = null
+    private var onSwipe: HandleOnSwipe? = null
 
     private val transitionTop: Transition = Slide(Gravity.TOP)
     private val transitionBottom: Transition = Slide(Gravity.BOTTOM)
 
     //location vars and sets
     private var isLocationPermissionAsked: Boolean = false
-    private val callback = locationCallback()
+
     private lateinit var locationClient: FusedLocationProviderClient
     private val fine = Manifest.permission.ACCESS_FINE_LOCATION
     private val coarse = Manifest.permission.ACCESS_COARSE_LOCATION
+    private val callback = locationCallback()
     private val launcher = activityResultLauncher()
     private lateinit var lat: String
     private lateinit var lon: String
@@ -80,7 +82,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
     private val zoomOut: Float = 0f
 
     //settings for onLocationChangelistener logic
-    private val locationRange: Float = 2000f //smallest displacement in meters 2000f
+    private val locationRange: Float = 0f //smallest displacement in meters 2000f
 
     //openWeather API weather map layers vars and sets
     private var overLayersOn = false
@@ -119,7 +121,6 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         if (!isLocationPermissionAsked) {
             locationClient()
         }
-        commonViewModel.getWeatherLastSavedInDB(requireContext())
         setListeners()
         initObservers()
     }
@@ -131,6 +132,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         localWeatherButtonListener()
         onLayoutChangeListener(view)
         onFullScreenButtonListener()
+        onTempTextClickListener()
     }
 
     private fun initObservers() {
@@ -187,7 +189,6 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
             }
             binding.buttonGetLocalWeatherCurrent.isClickable = true
         }
-
     }
 
     private fun getWeatherWithUserInput(): Boolean {
@@ -296,6 +297,17 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         }
     }
 
+    private fun onTempTextClickListener() {
+        binding.textViewTempUnit.setOnClickListener {
+            isFahrenheit = !isFahrenheit
+            commonViewModel.getWeatherLastSavedInDB(requireContext())
+        }
+        binding.textViewTempCurrentText.setOnClickListener {
+            isFahrenheit = !isFahrenheit
+            commonViewModel.getWeatherLastSavedInDB(requireContext())
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun onInternetConnectionListener(context: Context) {
         val connectivityManager =
@@ -333,7 +345,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
     private fun activityResultLauncher() =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             val locationManager =
-                requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             lifecycleScope.launchWhenResumed {
                 while (true) {
                     println("waiting... ${Thread.currentThread()}")
@@ -414,12 +426,12 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         if (result[0] > locationRange || (currentTimeStamp - lastSavedTimestamp) > timeRange) {
             if (!inProgress) {
                 context?.let {
-                    inProgress = true
                     commonViewModel.getWeatherByLatLon(
                         location.latitude.toString(),
                         location.longitude.toString(),
                         it
                     )
+                    inProgress = true
                 }
             }
             lastSavedTimestamp = currentTimeStamp
@@ -512,6 +524,12 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         binding.textViewPressureCurrentValue.text = pressure
 
         binding.textViewUvCurrentValue.text = it.hourly[0].uvi.toString()
+
+        if (isFahrenheit) {
+            binding.textViewTempUnit.text = "F"
+        } else {
+            binding.textViewTempUnit.text = "C"
+        }
 
         val temp = tempToIntAndString(it.hourly[0].temp)
         binding.textViewTempCurrentText.text = temp
@@ -704,9 +722,27 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
     }
 
+    private fun setTempUnit() {
+        val sh = activity?.getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        when (sh?.getString("isFahrenheit", isFahrenheit.toString())) {
+            "true" -> isFahrenheit = true
+        }
+        commonViewModel.getWeatherLastSavedInDB(requireContext())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setTempUnit()
+    }
+
     override fun onPause() {
         super.onPause()
         binding.editTextCityInputCurrent.clearFocus()
+
+        val sharedPreferences = activity?.getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        val myEdit = sharedPreferences?.edit()
+        myEdit?.putString("isFahrenheit", isFahrenheit.toString())
+        myEdit?.apply()
     }
 }
 

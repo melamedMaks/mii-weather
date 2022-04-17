@@ -32,6 +32,12 @@ class EightDayAdapter(private val oneCallWeatherResult: OneCallWeatherResult) :
             val place = "$city, $country"
             holder.binding.textViewCityCountryEight.text = place
 
+            if (isFahrenheit) {
+                holder.binding.textViewTempUnitEight.text = "F"
+            } else {
+                holder.binding.textViewTempUnitEight.text = "C"
+            }
+
             holder.binding.textViewTempEightValue.text = tempToIntAndString(temp.day)
 
             holder.binding.textViewMinTempEight.text = tempToIntAndString(temp.min)

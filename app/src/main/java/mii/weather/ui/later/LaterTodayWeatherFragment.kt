@@ -1,27 +1,26 @@
 package mii.weather.ui.later
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Slide
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import kotlinx.coroutines.launch
-
 import mii.weather.adapters.LaterTodayAdapter
 import mii.weather.databinding.LaterTodayWeatherFragmentBinding
 import mii.weather.models.AirPollutionResult
-import mii.weather.ui.CommonViewModel
 import mii.weather.models.OneCallWeatherResult
 import mii.weather.repository.WeatherRepository.Companion.airPollutionResultUpdated
 import mii.weather.repository.WeatherRepository.Companion.oneCallWeatherResultUpdated
+import mii.weather.ui.CommonViewModel
 
 class LaterTodayWeatherFragment : Fragment() {
 
@@ -54,7 +53,7 @@ class LaterTodayWeatherFragment : Fragment() {
         commonViewModel.oneCallWeatherResult.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
                 oneCallWeatherResult = it
-                if (binding.coverLater.isVisible){
+                if (binding.coverLater.isVisible) {
                     TransitionManager.beginDelayedTransition(binding.root, transition)
                     binding.coverLater.isVisible = false
                 }
@@ -62,9 +61,9 @@ class LaterTodayWeatherFragment : Fragment() {
         }
     }
 
-    private fun airPollutionObserver(){
+    private fun airPollutionObserver() {
         commonViewModel.airPollutionResult.observe(viewLifecycleOwner) {
-            lifecycleScope.launch{
+            lifecycleScope.launch {
                 airPollutionResult = it
                 updateLaterTodayRecycler(oneCallWeatherResult, airPollutionResult)
             }
@@ -73,16 +72,23 @@ class LaterTodayWeatherFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-            commonViewModel.getEightWeatherData()
-        oneCallWeatherResultUpdated?.let { airPollutionResultUpdated?.let { it1 ->
-            updateLaterTodayRecycler(it,
-                it1
-            )
-        } }
+        commonViewModel.getEightWeatherData()
+        oneCallWeatherResultUpdated?.let {
+            airPollutionResultUpdated?.let { it1 ->
+                updateLaterTodayRecycler(
+                    it,
+                    it1
+                )
+            }
+        }
     }
 
-    private fun updateLaterTodayRecycler(oneCallWeatherResult: OneCallWeatherResult, airPollutionResult: AirPollutionResult) {
-        binding.recyclerLaterToday.adapter = LaterTodayAdapter(oneCallWeatherResult, airPollutionResult)
+    private fun updateLaterTodayRecycler(
+        oneCallWeatherResult: OneCallWeatherResult,
+        airPollutionResult: AirPollutionResult
+    ) {
+        binding.recyclerLaterToday.adapter =
+            LaterTodayAdapter(oneCallWeatherResult, airPollutionResult)
         binding.recyclerLaterToday.layoutManager = LinearLayoutManager(
             requireContext(), LinearLayoutManager.VERTICAL, false
         )

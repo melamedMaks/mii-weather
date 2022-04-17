@@ -204,7 +204,7 @@
                 android:layout_marginTop="8dp"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textSize="48sp"
+                android:textSize="46sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_city_country_current"
                 tools:text="+28"
@@ -513,6 +513,16 @@
                 tools:ignore="ImageContrastCheck"
                 android:visibility="invisible" />
 
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView_temp_unit"
+                app:layout_constraintStart_toEndOf="@+id/textView_temp_current_text"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_temp_current_text"
+                android:textSize="46sp"
+                android:includeFontPadding="false"
+                android:textColor="#757575" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
@@ -593,19 +603,6 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView_search_icon_current"
             tools:ignore="TextContrastCheck" />
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/textView_cover_map"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:background="@drawable/layout_gradient_map_bg"-->
-    <!--        android:translationZ="-1dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/map"-->
-    <!--        app:layout_constraintEnd_toEndOf="@+id/map"-->
-    <!--        app:layout_constraintHorizontal_bias="0.0"-->
-    <!--        app:layout_constraintStart_toStartOf="@+id/map"-->
-    <!--        app:layout_constraintTop_toTopOf="@+id/constraintLayoutTop"-->
-    <!--        app:layout_constraintVertical_bias="1.0" />-->
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline6"

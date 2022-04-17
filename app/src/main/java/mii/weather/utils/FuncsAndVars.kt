@@ -5,10 +5,6 @@ import android.content.Context
 import android.graphics.Color
 import android.icu.text.SimpleDateFormat
 import android.icu.util.TimeZone
-import android.location.Location
-import android.view.HapticFeedbackConstants
-import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -33,6 +29,7 @@ var lonLocal: Double = 0.0
 var inProgress = false
 var isUIUpdatedByCurrentLocation = false
 var alertVisible = false
+var isFahrenheit = false
 
 @StringRes
 val TAB_TITLES = arrayOf(
@@ -87,16 +84,12 @@ fun setIconFromUrl(
 }
 
 fun tempToIntAndString(temp: Double): String {
-    val celsius = "°"
-    val t = temp.roundToInt()
-    return when {
-        t > 0 -> {
-            "${t}$celsius"
-        }
-        else -> {
-            "${t}$celsius"
-        }
+    var t = temp
+    if (isFahrenheit){
+        t = t * 1.8 + 32
     }
+        val degree = "°"
+        return "${t.roundToInt()}$degree"
 }
 
 fun firstCharUp(letter: String): String {

@@ -1,8 +1,10 @@
 package mii.weather
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -12,6 +14,7 @@ import mii.weather.ui.ActivityBackPressedCallback
 import mii.weather.ui.SectionsPagerAdapter
 import mii.weather.ui.current.HandleOnSwipe
 import mii.weather.utils.TAB_TITLES
+
 
 class MainActivity : AppCompatActivity(), HandleOnSwipe {
 
@@ -59,9 +62,12 @@ class MainActivity : AppCompatActivity(), HandleOnSwipe {
             if (currentItem > 0)
             //returns previous
                 viewPager.currentItem = currentItem - 1
-            //else calls super
             else {
-                super.onBackPressed()
+                val a = Intent(Intent.ACTION_MAIN)
+                a.addCategory(Intent.CATEGORY_HOME)
+                a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(a)
+                Log.d("Maks", "Context backPressed app context: ${applicationContext}")
             }
         }
     }

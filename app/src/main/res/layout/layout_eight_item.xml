@@ -208,7 +208,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
-                android:textSize="11sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 tools:text="Clouds"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView_temp_eight_value"
@@ -255,7 +255,7 @@
                 android:layout_marginTop="8dp"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textSize="48sp"
+                android:textSize="46sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_city_country_eight"
                 app:layout_constraintVertical_chainStyle="spread_inside"
@@ -428,7 +428,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="@+id/textView_description_eight_value"
                 app:layout_constraintStart_toEndOf="@+id/textView_description_eight_value"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="8dp" />
 
         <View
                 android:id="@+id/divider8"
@@ -450,6 +450,15 @@
                 android:layout_marginStart="4dp"
                 app:tint="#757575"
                 android:contentDescription="@string/wind_direction_arrow" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView_temp_unit_eight"
+                app:layout_constraintStart_toEndOf="@+id/textView_temp_eight_value"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_temp_eight_value"
+                android:textSize="46sp"
+                android:includeFontPadding="false" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
