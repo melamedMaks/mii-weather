@@ -14,7 +14,7 @@ android {
         applicationId "mii.weather"
         minSdk 25
         targetSdk 31
-        versionCode 20 // 20
+        versionCode 23 // 23
         versionName "Twilight"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

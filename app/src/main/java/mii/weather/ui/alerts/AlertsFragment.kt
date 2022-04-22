@@ -75,6 +75,11 @@ class AlertsFragment : Fragment() {
             binding.textViewSender.text = this.senderName
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
 
 interface ClickListener {

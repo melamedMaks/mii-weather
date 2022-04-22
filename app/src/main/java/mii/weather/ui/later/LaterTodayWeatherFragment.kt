@@ -93,4 +93,9 @@ class LaterTodayWeatherFragment : Fragment() {
             requireContext(), LinearLayoutManager.VERTICAL, false
         )
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

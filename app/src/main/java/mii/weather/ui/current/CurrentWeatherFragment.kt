@@ -82,7 +82,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
     private val zoomOut: Float = 0f
 
     //settings for onLocationChangelistener logic
-    private val locationRange: Float = 0f //smallest displacement in meters 2000f
+    private val locationRange: Float = 2000f //smallest displacement in meters 2000f
 
     //openWeather API weather map layers vars and sets
     private var overLayersOn = false
@@ -424,8 +424,10 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         )
         val currentTimeStamp = System.currentTimeMillis()
         if (result[0] > locationRange || (currentTimeStamp - lastSavedTimestamp) > timeRange) {
+            println("Before $context")
             if (!inProgress) {
                 context?.let {
+                    println("After $context")
                     commonViewModel.getWeatherByLatLon(
                         location.latitude.toString(),
                         location.longitude.toString(),
@@ -743,6 +745,11 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         val myEdit = sharedPreferences?.edit()
         myEdit?.putString("isFahrenheit", isFahrenheit.toString())
         myEdit?.apply()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

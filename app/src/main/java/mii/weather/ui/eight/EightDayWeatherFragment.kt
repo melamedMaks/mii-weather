@@ -1,13 +1,13 @@
 package mii.weather.ui.eight
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Slide
@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import mii.weather.adapters.EightDayAdapter
 import mii.weather.databinding.EightDayWeatherFragmentBinding
 import mii.weather.models.OneCallWeatherResult
-
 import mii.weather.ui.CommonViewModel
 
 class EightDayWeatherFragment : Fragment() {
@@ -57,7 +56,7 @@ class EightDayWeatherFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-            commonViewModel.getEightWeatherData()
+        commonViewModel.getEightWeatherData()
 
     }
 
@@ -66,5 +65,10 @@ class EightDayWeatherFragment : Fragment() {
         binding.recyclerEightDay.layoutManager = LinearLayoutManager(
             requireContext(), LinearLayoutManager.VERTICAL, false
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
