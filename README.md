@@ -32,18 +32,18 @@ If the data in the DB exists, <b>UI is rendered</b> using the information from t
 Developer: Melamed Maksim<br>
 Contact <a href="melamed.maks@gmail.com">e-mail</a></p><br><br></p>
 <p float="left" align="center">
-<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screen%20Shot%202022-03-09%20at%207.05.59%20PM.png" alt="mii weather" width="250">
-<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screen%20Shot%202022-03-09%20at%207.07.11%20PM.png" alt="mii weather" width="250">
-<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screen%20Shot%202022-03-09%20at%207.28.58%20PM.png" alt="mii weather" width="250">
+<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screenshot_20220512-002209_Permission controller.jpg" alt="mii weather" width="250">
+<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screenshot_20220511-234430_Mii Weather.jpg" alt="mii weather" width="250">
+<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screenshot_20220512-002256_Mii Weather.jpg" alt="mii weather" width="250">
 </p>
 <p float="left" align="center">
-<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screen%20Shot%202022-03-09%20at%207.09.33%20PM.png" alt="mii weather" width="250"> 
-<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screen%20Shot%202022-03-09%20at%207.10.12%20PM.png" alt="mii weather" width="250"> 
-<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screen%20Shot%202022-03-09%20at%207.10.34%20PM.png" alt="mii weather" width="250"> 
+<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screenshot_20220511-235209_Mii Weather.jpg" alt="mii weather" width="250"> 
+<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screenshot_20220512-002326_Mii Weather.jpg" alt="mii weather" width="250"> 
+<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screenshot_20220512-002346_Mii Weather.jpg" alt="mii weather" width="250"> 
 </p>
 <p float="left" align="center">
-<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screen%20Shot%202022-03-09%20at%207.10.59%20PM.png" alt="mii weather" width="250"> 
-<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screen%20Shot%202022-03-09%20at%207.11.17%20PM.png" alt="mii weather" width="250"> 
-<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screen%20Shot%202022-03-09%20at%207.17.57%20PM.png" alt="mii weather" width="250">
+<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screenshot_20220511-234855_Mii Weather.jpg" alt="mii weather" width="250"> 
+<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screenshot_20220511-234847_Mii Weather.jpg" alt="mii weather" width="250"> 
+<img src="https://github.com/melamedMaks/mii-weather/blob/main/images/Screenshot_20220511-234819_Mii Weather.jpg" alt="mii weather" width="250">
 </p>
 
