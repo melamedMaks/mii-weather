@@ -30,6 +30,7 @@ var inProgress = false
 var isUIUpdatedByCurrentLocation = false
 var alertVisible = false
 var isFahrenheit = false
+val windDegreeCorrection = 180
 
 @StringRes
 val TAB_TITLES = arrayOf(
@@ -151,7 +152,7 @@ fun getAqiTextColor(
     text: String?,
     color: Int
 ): Pair<Int, String> {
-    var textValue = text
+    val textValue: String?
     var colorValue = color
     when (airPollutionValue) {
         1 -> {

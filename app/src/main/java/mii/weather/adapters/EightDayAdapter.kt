@@ -66,7 +66,10 @@ class EightDayAdapter(private val oneCallWeatherResult: OneCallWeatherResult) :
             val humidity = "$humidity%"
             holder.binding.textViewHumidityEightValue.text = humidity
             val wind = windFormatter(windSpeed)
+
             holder.binding.textViewWindValueEight.text = wind
+
+            val windDeg = windDeg + windDegreeCorrection
             holder.binding.eightWindArrow.animate().rotation(windDeg.toFloat())
 
             holder.binding.textViewUvEightValue.text = uvi.toString()

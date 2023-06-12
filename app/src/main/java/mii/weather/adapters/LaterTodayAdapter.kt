@@ -66,6 +66,7 @@ class LaterTodayAdapter(private val laterWeatherResult: OneCallWeatherResult, pr
             val feelsLikeHourly = "Feels like: ${tempToIntAndString(feelsLike)}"
             holder.binding.textViewFeelsLikeLater.text = feelsLikeHourly
 
+            val windDeg = windDeg + windDegreeCorrection
             holder.binding.laterWindArrow.animate().rotation(windDeg.toFloat())
 
             val wind = windFormatter(windSpeed)
@@ -74,7 +75,7 @@ class LaterTodayAdapter(private val laterWeatherResult: OneCallWeatherResult, pr
             val humidityLater = "${humidity}%"
             holder.binding.textViewHumidityLaterValue.text = humidityLater
 
-            val pressureLater = "${pressure} hPa"
+            val pressureLater = "$pressure hPa"
             holder.binding.textViewPressureLaterValue.text = pressureLater
 
         }

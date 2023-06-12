@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), HandleOnSwipe {
     }
 
     //caching onBackPressed event
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         var isBackHandled = false
         //getting current item index

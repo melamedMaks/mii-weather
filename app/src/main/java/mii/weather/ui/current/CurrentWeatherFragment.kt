@@ -194,7 +194,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
     private fun getWeatherWithUserInput(): Boolean {
         binding.buttonGetLocalWeatherCurrent.isClickable = false
         val input = binding.editTextCityInputCurrent.text.toString().lowercase()
-        if (input != "" && !inProgress) {
+        if (input.isNotEmpty() && !inProgress) {
             binding.progressBar.visibility = View.VISIBLE
             binding.buttonGetLocalWeatherCurrent.imageTintList =
                 ColorStateList.valueOf(rgb(255, 255, 255))
@@ -514,8 +514,7 @@ class CurrentWeatherFragment : Fragment(), ActivityBackPressedCallback,
         binding.textViewVisibilityCurrentValue.text = visibility
 
 
-        val windDegree = it.daily[0].windDeg
-        println("Wind Degree: $windDegree")
+        val windDegree = it.daily[0].windDeg + windDegreeCorrection
         binding.currentWindArrow.animate().rotation(windDegree.toFloat()).alpha(1.0f).duration =
             800
 
